@@ -7,7 +7,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        custom: ['Outfit', 'sans-serif'],
+        MyStyle: ['Outfit', "sans-serif"],
       },
     },
   },

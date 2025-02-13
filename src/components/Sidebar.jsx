@@ -3,13 +3,12 @@ import { Menu } from "antd";
 import {
   AppstoreOutlined,
   CarOutlined,
+  MessageOutlined,
+  PlusSquareFilled,
   TeamOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
 import { Link } from "react-router-dom";
-import { CiLocationOn } from "react-icons/ci";
-import { FaCarSide } from "react-icons/fa";
-
-const { SubMenu } = Menu;
 
 const sidebarItems = [
   {
@@ -19,31 +18,24 @@ const sidebarItems = [
   },
   {
     key: "2",
-    icon: <TeamOutlined />,
-    label: <Link to="/">Vendor list</Link>,
+    icon: <PlusSquareFilled />,
+    label: <Link to="/add-my-car">Add My Car</Link>,
   },
   {
     key: "3",
-    icon: <TeamOutlined />,
-    label: <Link to="/">All User List</Link>,
+    icon: <CarOutlined />,
+    label: <Link to="/my-car-list">My All Post Car</Link>,
   },
   {
     key: "4",
-    icon: <CarOutlined />,
-    label: <Link to="/">All Car List</Link>,
+    icon: <MessageOutlined />,
+    label: <Link to="/user-messages">Massages</Link>,
   },
   {
     key: "5",
-    icon: <FaCarSide  />,
-    label: <Link to="/">Car Brand List</Link>,
+    icon: <UserOutlined  />,
+    label: <Link to="/user-profile">My Profile</Link>,
   },
-  {
-    key: "6",
-    icon: <CiLocationOn />,
-    label: <Link to="/">Nearby Location List</Link>,
-  },
-
- 
 ];
 
 const Sidebar = ({ onClick }) => {
