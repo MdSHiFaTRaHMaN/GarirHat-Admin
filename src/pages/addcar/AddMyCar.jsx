@@ -1,5 +1,6 @@
 import { Input, Select, Checkbox, Button, Form, Collapse } from "antd";
 import { CarOutlined } from "@ant-design/icons";
+import { useState } from "react";
 
 const { Option } = Select;
 
@@ -9,8 +10,14 @@ const AddMyCar = () => {
   const onFinish = (values) => {
     console.log("Form Submitted:", values);
   };
+  const [regularPrice, setRegularPrice] = useState(0);
+  const [repairPrice, setRepairPrice] = useState(0);
+  const [registrationTax, setRegistrationTax] = useState(0);
+
+  const totalPrice = Number(regularPrice) + Number(repairPrice) + Number(registrationTax);
+
   return (
-    <div className="mx-auto bg-white p-6 rounded-lg shadow-lg">
+    <div className="mx-auto bg-white p-6">
       <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
         <CarOutlined />
         Sell your car from home for the best price
@@ -23,7 +30,7 @@ const AddMyCar = () => {
             name="make"
             rules={[{ required: true, message: "Please enter make" }]}
           >
-            <Input placeholder="Enter Car Make" className="py-[10px]"/>
+            <Input placeholder="Enter Car Make" className="py-[10px]" />
           </Form.Item>
           {/* car mdoel  */}
           <Form.Item
@@ -39,7 +46,35 @@ const AddMyCar = () => {
             name="year"
             rules={[{ required: true, message: "Please enter year" }]}
           >
-            <Input type="number" placeholder="Enter Year" className="py-[10px]"/>
+            <Input
+              type="number"
+              placeholder="Enter Year"
+              className="py-[10px]"
+            />
+          </Form.Item>
+          {/* Trim  */}
+          <Form.Item label="Trim" name="Trim">
+            <Input placeholder="Enter Trim" className="py-[10px]" />
+          </Form.Item>
+          {/* VIN  */}
+          <Form.Item
+            label="VIN (Vehicle Identification/Chassis Number)"
+            name="VIN"
+          >
+            <Input placeholder="Enter VIN" className="py-[10px]" />
+          </Form.Item>
+          {/* Engine  */}
+          <Form.Item label="Engine" name="Engine">
+            <Input placeholder="Enter Engine" className="py-[10px]" />
+          </Form.Item>
+          {/* mileage  */}
+          <Form.Item label="Mileage" name="mileage">
+            <Input
+              type="number"
+              suffix="miles"
+              placeholder="Enter Mileage"
+              className="py-[10px]"
+            />
           </Form.Item>
           {/* drivetrain  */}
           <Form.Item label="Drivetrain" name="drivetrain">
@@ -51,32 +86,21 @@ const AddMyCar = () => {
           </Form.Item>
           {/* Exterior Color */}
           <Form.Item label="Exterior Color" name="exteriorColor">
-            <Input placeholder="Enter Exterior Color" className="py-[10px]"/>
-          </Form.Item>
-          {/* MPG  */}
-          <Form.Item label="MPG" name="MPG">
-            <Input placeholder="Enter MPG" className="py-[10px]"/>
-          </Form.Item>
-          {/* Engine  */}
-          <Form.Item label="Engine" name="Engine">
-            <Input placeholder="Enter Engine" className="py-[10px]"/>
-          </Form.Item>
-          {/* Trim  */}
-          <Form.Item label="Trim" name="Trim">
-            <Input placeholder="Enter Trim" className="py-[10px]"/>
-          </Form.Item>
-          {/* VIN  */}
-          <Form.Item label="VIN" name="VIN">
-            <Input placeholder="Enter VIN" className="py-[10px]"/>
-          </Form.Item>
-          {/* Stock number  */}
-          <Form.Item label="Stock number" name="Stock-number">
-            <Input placeholder="Enter Stock number" className="py-[10px]"/>
+            <Input placeholder="Enter Exterior Color" className="py-[10px]" />
           </Form.Item>
           {/* Interior color  */}
           <Form.Item label="Interior color" name="enterior-color">
-            <Input placeholder="Enter Interior color" className="py-[10px]"/>
+            <Input placeholder="Enter Interior color" className="py-[10px]" />
           </Form.Item>
+          {/* MPG  */}
+          <Form.Item label="MPG" name="MPG">
+            <Input placeholder="Enter MPG" className="py-[10px]" />
+          </Form.Item>
+          {/* Stock number  */}
+          <Form.Item label="Stock number" name="Stock-number">
+            <Input placeholder="Enter Stock number" className="py-[10px]" />
+          </Form.Item>
+
           {/* fuelType */}
           <Form.Item label="Fuel Type" name="fuelType">
             <Select placeholder="Select Fuel Type" className="h-[44px]">
@@ -93,10 +117,7 @@ const AddMyCar = () => {
               <Option value="Used">Used</Option>
             </Select>
           </Form.Item>
-          {/* mileage  */}
-          <Form.Item label="Mileage" name="mileage">
-            <Input type="number" suffix="miles" placeholder="Enter Mileage" className="py-[10px]"/>
-          </Form.Item>
+
           {/* transmission  */}
           <Form.Item label="Transmission" name="transmission">
             <Select placeholder="Select Transmission" className="h-[44px]">
@@ -138,7 +159,7 @@ const AddMyCar = () => {
         />
         {/* measurements  */}
         <Collapse
-        className="my-5"
+          className="my-5"
           items={[
             {
               key: "2",
@@ -217,6 +238,58 @@ const AddMyCar = () => {
             },
           ]}
         />
+
+        {/* last section  */}
+        <div className="grid grid-cols-2 gap-x-4 mt-3">
+      {/* Regular Price */}
+      <Form.Item
+        label="Regular Price"
+        name="regular-price"
+        rules={[{ required: true, message: "Please enter Regular Price" }]}
+      >
+        <Input
+          type="number"
+          placeholder="Enter Regular Price"
+          className="py-[10px]"
+          onChange={(e) => setRegularPrice(e.target.value)}
+        />
+      </Form.Item>
+
+      {/* Discount Price */}
+      <Form.Item
+        label="Discount Price"
+        name="Discount Price"
+        rules={[{ required: true, message: "Please enter Discount Price" }]}
+      >
+        <Input
+          type="number"
+          placeholder="Enter Discount Price"
+          className="py-[10px]"
+          onChange={(e) => setRegistrationTax(e.target.value)}
+        />
+      </Form.Item>
+
+      {/* Repair Price */}
+      <Form.Item
+        label="Repair Price"
+        name="repair-price"
+        rules={[{ required: true, message: "Please enter Repair Price" }]}
+      >
+        <Input
+          type="number"
+          placeholder="Enter Repair Price"
+          className="py-[10px]"
+          onChange={(e) => setRepairPrice(e.target.value)}
+        />
+      </Form.Item>
+
+      {/* Total Price */}
+      <div className="col-span-2 mt-4">
+        <h1 className="text-2xl font-semibold">
+          Total Price: <span className="text-blue-600">৳ {totalPrice}</span>
+        </h1>
+      </div>
+    </div>
 
         <Form.Item>
           <Button type="primary" htmlType="submit" className="w-full mt-5">

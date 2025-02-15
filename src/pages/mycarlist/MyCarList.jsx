@@ -25,13 +25,13 @@ const MyCarList = () => {
           key: "condition",
         },
         {
-          title: "Tags",
+          title: "Status",
           key: "tags",
           dataIndex: "tags",
           render: (_, { tags }) => (
             <>
               {tags.map((tag) => {
-                let color = tag === "new" ? "green" : tag === "used" ? "blue" : "volcano";
+                let color = tag === "Active" ? "green" : tag === "Deactive" ? "blue" : "volcano";
                 return (
                   <Tag color={color} key={tag}>
                     {tag.toUpperCase()}
@@ -58,7 +58,7 @@ const MyCarList = () => {
           name: "BMW X5",
           year: 2020,
           condition: "Used",
-          tags: ["used"],
+          tags: ["Active"],
           image: CarImage,
         },
         {
@@ -66,7 +66,7 @@ const MyCarList = () => {
           name: "Audi Q7",
           year: 2022,
           condition: "New",
-          tags: ["new"],
+          tags: ["Deactive"],
           image: CarImage,
         },
         {
@@ -74,7 +74,7 @@ const MyCarList = () => {
           name: "Toyota Corolla",
           year: 2019,
           condition: "Certified",
-          tags: ["certified"],
+          tags: ["Active"],
           image: CarImage,
         },
       ];

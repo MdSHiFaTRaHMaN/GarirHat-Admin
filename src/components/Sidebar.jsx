@@ -5,10 +5,10 @@ import {
   CarOutlined,
   MessageOutlined,
   PlusSquareFilled,
-  TeamOutlined,
   UserOutlined,
 } from "@ant-design/icons";
 import { Link } from "react-router-dom";
+import { CiLogout } from "react-icons/ci";
 
 const sidebarItems = [
   {
@@ -35,6 +35,11 @@ const sidebarItems = [
     key: "5",
     icon: <UserOutlined  />,
     label: <Link to="/user-profile">My Profile</Link>,
+  },
+  {
+    key: "6",
+    icon: <CiLogout   />,
+    label: <Link to="/user-profile">LogOut</Link>,
   },
 ];
 
