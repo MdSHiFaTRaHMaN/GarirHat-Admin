@@ -18,7 +18,7 @@ const AddMyCar = () => {
 
   return (
     <div className="mx-auto bg-white p-6">
-      <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+      <h2 className="text-2xl font-bold mb-4 flex items-center justify-center gap-2">
         <CarOutlined />
         Sell your car from home for the best price
       </h2>
@@ -115,6 +115,13 @@ const AddMyCar = () => {
             <Select placeholder="Select Condition" className="h-[44px]">
               <Option value="New">New</Option>
               <Option value="Used">Used</Option>
+            </Select>
+          </Form.Item>
+          {/* Loan Condition  */}
+          <Form.Item label="Loan" name="Loan Condition">
+            <Select placeholder="Select Loan Condition" className="h-[44px]">
+              <Option value="Available">Available</Option>
+              <Option value="notAvailable">Not Available</Option>
             </Select>
           </Form.Item>
 
