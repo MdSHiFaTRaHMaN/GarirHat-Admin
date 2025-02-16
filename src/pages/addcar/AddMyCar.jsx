@@ -1,21 +1,46 @@
 import { Input, Select, Checkbox, Button, Form, Collapse } from "antd";
 import { CarOutlined } from "@ant-design/icons";
+import { useAlFeature, useAlLocation } from "../../api/api";
 import { useState } from "react";
 
 const { Option } = Select;
 
 const AddMyCar = () => {
   const [form] = Form.useForm();
+  const { alLocation } = useAlLocation();
+  const { alFeature } = useAlFeature();
 
+  const [selectedDivision, setSelectedDivision] = useState(null);
+  const [selectedDistrict, setSelectedDistrict] = useState(null);
+  const [filteredDistricts, setFilteredDistricts] = useState([]);
+  const [filteredUpazilas, setFilteredUpazilas] = useState([]);
+
+  // Handle Division Change
+  const handleDivisionChange = (value) => {
+    setSelectedDivision(value);
+    setSelectedDistrict(null); // Reset district on division change
+    setFilteredUpazilas([]); // Reset Upazilas
+    const selectedDiv = alLocation.find((div) => div.id === value);
+    setFilteredDistricts(selectedDiv ? selectedDiv.districts : []);
+  };
+
+  // Handle District Change
+  const handleDistrictChange = (value) => {
+    setSelectedDistrict(value);
+    const selectedDist = filteredDistricts.find((dist) => dist.id === value);
+    setFilteredUpazilas(selectedDist ? selectedDist.upazilas : []);
+  };
+
+  // search feature 
+  const [searchTerm, setSearchTerm] = useState("");
+  // Filtered Features Based on Search Input
+  const filteredFeatures = alFeature.filter((feature) =>
+    feature.feature_name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  // input all data
   const onFinish = (values) => {
     console.log("Form Submitted:", values);
   };
-  const [regularPrice, setRegularPrice] = useState(0);
-  const [repairPrice, setRepairPrice] = useState(0);
-  const [registrationTax, setRegistrationTax] = useState(0);
-
-  const totalPrice = Number(regularPrice) + Number(repairPrice) + Number(registrationTax);
-
   return (
     <div className="mx-auto bg-white p-6">
       <h2 className="text-2xl font-bold mb-4 flex items-center justify-center gap-2">
@@ -100,7 +125,6 @@ const AddMyCar = () => {
           <Form.Item label="Stock number" name="Stock-number">
             <Input placeholder="Enter Stock number" className="py-[10px]" />
           </Form.Item>
-
           {/* fuelType */}
           <Form.Item label="Fuel Type" name="fuelType">
             <Select placeholder="Select Fuel Type" className="h-[44px]">
@@ -124,7 +148,6 @@ const AddMyCar = () => {
               <Option value="notAvailable">Not Available</Option>
             </Select>
           </Form.Item>
-
           {/* transmission  */}
           <Form.Item label="Transmission" name="transmission">
             <Select placeholder="Select Transmission" className="h-[44px]">
@@ -132,38 +155,79 @@ const AddMyCar = () => {
               <Option value="Manual">Manual</Option>
             </Select>
           </Form.Item>
+          {/* Select Division */}
+          <Form.Item label="Division" name="division">
+            <Select
+              showSearch
+              className="h-[44px]"
+              placeholder="Select a division"
+              optionFilterProp="label"
+              options={alLocation.map((location) => ({
+                value: location.id,
+                label: location.name,
+              }))}
+              onChange={handleDivisionChange}
+            />
+          </Form.Item>
+          {/* Select District */}
+          <Form.Item label="District" name="district">
+            <Select
+              showSearch
+              className="h-[44px]"
+              placeholder="Select a District"
+              optionFilterProp="label"
+              options={filteredDistricts.map((district) => ({
+                value: district.id,
+                label: district.name,
+              }))}
+              disabled={!selectedDivision}
+              onChange={handleDistrictChange}
+            />
+          </Form.Item>
+          {/* Select Upazila */}
+          <Form.Item label="Upazila" name="upazila">
+            <Select
+              showSearch
+              className="h-[44px]"
+              placeholder="Select an Upazila"
+              optionFilterProp="label"
+              options={filteredUpazilas.map((upazila) => ({
+                value: upazila.id,
+                label: upazila.name,
+              }))}
+              disabled={!selectedDistrict}
+            />
+          </Form.Item>
         </div>
         {/* Safety Feature  */}
         <Collapse
-          items={[
-            {
-              key: "1",
-              label: "Safety Features",
-              children: (
-                <Form.Item name="safetyFeatures">
-                  <Checkbox.Group className="grid grid-cols-4">
-                    <Checkbox value="ABS">ABS Brakes</Checkbox>
-                    <Checkbox value="Backup Camera">Backup Camera</Checkbox>
-                    <Checkbox value="Curtain-Airbags">Curtain Airbags</Checkbox>
-                    <Checkbox value="Driver-Airbag">Driver Airbag</Checkbox>
-                    <Checkbox value="Front-Side-Airbags">
-                      Front Side Airbags
-                    </Checkbox>
-                    <Checkbox value="Passenger-Airbag">
-                      Passenger Airbag
-                    </Checkbox>
-                    <Checkbox value="Rear-Side-Airbags">
-                      Rear Side Airbags
-                    </Checkbox>
-                    <Checkbox value="Blind Spot Monitoring">
-                      Blind Spot Monitoring
-                    </Checkbox>
-                  </Checkbox.Group>
-                </Form.Item>
-              ),
-            },
-          ]}
-        />
+      items={[
+        {
+          key: "1",
+          label: "Safety Features",
+          children: (
+            <Form.Item name="safetyFeatures">
+              {/* Search Input */}
+              <Input
+                className="my-3 py-[10px]"
+                placeholder="Search Feature"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              
+              {/* Checkbox Group */}
+              <Checkbox.Group className="grid grid-cols-4">
+                {filteredFeatures.map((feature) => (
+                  <Checkbox key={feature.id} value={feature.feature_name}>
+                    {feature.feature_name}
+                  </Checkbox>
+                ))}
+              </Checkbox.Group>
+            </Form.Item>
+          ),
+        },
+      ]}
+    />
         {/* measurements  */}
         <Collapse
           className="my-5"
@@ -245,58 +309,6 @@ const AddMyCar = () => {
             },
           ]}
         />
-
-        {/* last section  */}
-        <div className="grid grid-cols-2 gap-x-4 mt-3">
-      {/* Regular Price */}
-      <Form.Item
-        label="Regular Price"
-        name="regular-price"
-        rules={[{ required: true, message: "Please enter Regular Price" }]}
-      >
-        <Input
-          type="number"
-          placeholder="Enter Regular Price"
-          className="py-[10px]"
-          onChange={(e) => setRegularPrice(e.target.value)}
-        />
-      </Form.Item>
-
-      {/* Discount Price */}
-      <Form.Item
-        label="Discount Price"
-        name="Discount Price"
-        rules={[{ required: true, message: "Please enter Discount Price" }]}
-      >
-        <Input
-          type="number"
-          placeholder="Enter Discount Price"
-          className="py-[10px]"
-          onChange={(e) => setRegistrationTax(e.target.value)}
-        />
-      </Form.Item>
-
-      {/* Repair Price */}
-      <Form.Item
-        label="Repair Price"
-        name="repair-price"
-        rules={[{ required: true, message: "Please enter Repair Price" }]}
-      >
-        <Input
-          type="number"
-          placeholder="Enter Repair Price"
-          className="py-[10px]"
-          onChange={(e) => setRepairPrice(e.target.value)}
-        />
-      </Form.Item>
-
-      {/* Total Price */}
-      <div className="col-span-2 mt-4">
-        <h1 className="text-2xl font-semibold">
-          Total Price: <span className="text-blue-600">৳ {totalPrice}</span>
-        </h1>
-      </div>
-    </div>
 
         <Form.Item>
           <Button type="primary" htmlType="submit" className="w-full mt-5">
