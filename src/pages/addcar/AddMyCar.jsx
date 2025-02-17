@@ -1,5 +1,14 @@
-import { Input, Select, Checkbox, Button, Form, Collapse } from "antd";
-import { CarOutlined } from "@ant-design/icons";
+import {
+  Input,
+  Select,
+  Checkbox,
+  Button,
+  Form,
+  Collapse,
+  Upload,
+  message,
+} from "antd";
+import { CarOutlined, LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { useAlFeature, useAlLocation } from "../../api/api";
 import { useState } from "react";
 
@@ -31,12 +40,19 @@ const AddMyCar = () => {
     setFilteredUpazilas(selectedDist ? selectedDist.upazilas : []);
   };
 
-  // search feature 
+  // search feature
   const [searchTerm, setSearchTerm] = useState("");
   // Filtered Features Based on Search Input
   const filteredFeatures = alFeature.filter((feature) =>
     feature.feature_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const [fileList, setFileList] = useState([]);
+
+  const handleChange = ({ fileList }) => {
+    setFileList(fileList);
+  };
+
   // input all data
   const onFinish = (values) => {
     console.log("Form Submitted:", values);
@@ -201,33 +217,33 @@ const AddMyCar = () => {
         </div>
         {/* Safety Feature  */}
         <Collapse
-      items={[
-        {
-          key: "1",
-          label: "Safety Features",
-          children: (
-            <Form.Item name="safetyFeatures">
-              {/* Search Input */}
-              <Input
-                className="my-3 py-[10px]"
-                placeholder="Search Feature"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              
-              {/* Checkbox Group */}
-              <Checkbox.Group className="grid grid-cols-4">
-                {filteredFeatures.map((feature) => (
-                  <Checkbox key={feature.id} value={feature.feature_name}>
-                    {feature.feature_name}
-                  </Checkbox>
-                ))}
-              </Checkbox.Group>
-            </Form.Item>
-          ),
-        },
-      ]}
-    />
+          items={[
+            {
+              key: "1",
+              label: "Safety Features",
+              children: (
+                <Form.Item name="safetyFeatures">
+                  {/* Search Input */}
+                  <Input
+                    className="my-3 py-[10px]"
+                    placeholder="Search Feature"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+
+                  {/* Checkbox Group */}
+                  <Checkbox.Group className="grid grid-cols-4">
+                    {filteredFeatures.map((feature) => (
+                      <Checkbox key={feature.id} value={feature.feature_name}>
+                        {feature.feature_name}
+                      </Checkbox>
+                    ))}
+                  </Checkbox.Group>
+                </Form.Item>
+              ),
+            },
+          ]}
+        />
         {/* measurements  */}
         <Collapse
           className="my-5"
@@ -309,7 +325,31 @@ const AddMyCar = () => {
             },
           ]}
         />
-
+         {/* Selling price  */}
+         <Form.Item label="Selling Price" name="selling-price" className="mt-3">
+            <Input placeholder="Enter Selling Price" className="py-[10px]" />
+          </Form.Item>
+        <Upload
+          name="images"
+          listType="picture-card"
+          className="avatar-uploader mt-4"
+          action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
+          beforeUpload={(file) => {
+            const isImage = file.type.startsWith("image/");
+            if (!isImage) {
+              message.error("You can only upload image files!");
+            }
+            return isImage;
+          }}
+          multiple={true}
+          fileList={fileList}
+          onChange={handleChange}
+        >
+          <div>
+            <PlusOutlined />
+            <div style={{ marginTop: 8 }}>Upload</div>
+          </div>
+        </Upload>
         <Form.Item>
           <Button type="primary" htmlType="submit" className="w-full mt-5">
             Submit

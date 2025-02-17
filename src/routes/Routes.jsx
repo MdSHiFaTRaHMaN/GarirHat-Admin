@@ -6,6 +6,7 @@ import AddMyCar from "../pages/addcar/AddMyCar";
 import UserMessage from "../pages/usermessage/UserMessage";
 import UserProfile from "../pages/UserProfile";
 import MyCarList from "../pages/mycarlist/MyCarList";
+import DashboardTwo from "../pages/homepage/DashboardTwo";
 
 export const routes = createBrowserRouter([
   {
@@ -35,6 +36,10 @@ export const routes = createBrowserRouter([
       {
         path: "/my-car-list",
         element: <MyCarList />
+      },
+      {
+        path: "/dash",
+        element: <DashboardTwo />
       }
     ],
   },

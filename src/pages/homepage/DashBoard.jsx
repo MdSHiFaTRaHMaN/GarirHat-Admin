@@ -1,4 +1,4 @@
-import { Button, Row, Col, Card, Divider, Table, Avatar } from "antd";
+import { Button, Row, Col, Card, Divider, Table, Avatar, Tooltip } from "antd";
 import {
   ReloadOutlined,
   ShareAltOutlined,
@@ -7,10 +7,16 @@ import {
   DollarOutlined,
   DatabaseOutlined,
 } from "@ant-design/icons";
-import DashboardCard from "../../components/DashboardCard";
-import MonthlyActiveUsersChart from "../../components/MonthlyActiveUsersChart";
 import RevenueChart from "../../components/RevenueChart.js";
-import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
+import {
+  Bar,
+  BarChart,
+  Cell,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+} from "recharts";
+import { FaChartBar, FaFileInvoice, FaMoneyBill, FaUser } from "react-icons/fa";
 
 // import DashboardCard from "../components/DashboardCard.jsx";
 
@@ -20,65 +26,46 @@ function Dashboard() {
   };
 
   const data = [
-    { name: "Blue", value: 30, color: "#2B6CB0" },
-    { name: "Orange", value: 40, color: "#ED8936" },
-    { name: "Red", value: 20, color: "#E53E3E" },
-    { name: "Green", value: 10, color: "#38A169" },
+    {
+      name: "Total Earning",
+      value: "৳34 K",
+      color: "#4225F4",
+      icon: <FaUser />,
+    },
+    { name: "Customers", value: 1485, color: "#4285F4", icon: <FaUser /> },
+    { name: "Revenue", value: 5873, color: "#FBBC05", icon: <FaMoneyBill /> },
+    { name: "Profit", value: 70, color: "#EA4335", icon: <FaChartBar /> },
   ];
 
-  const columns = [
-    {
-      title: "Customers Name",
-      dataIndex: "customer",
-      key: "customer",
-      render: (text, record) => (
-        <div className="flex items-center">
-          <Avatar src={record.avatar} size="large" className="mr-2" />
-          <span>{text}</span>
-        </div>
-      ),
-    },
-    {
-      title: "Login Date",
-      dataIndex: "date",
-      key: "date",
-    },
-    {
-      title: "Account Type",
-      dataIndex: "item",
-      key: "item",
-    },
+  const mounthlydata = [
+    { name: "Jan", value: 80 },
+    { name: "Feb", value: 45 },
+    { name: "Mar", value: 70 },
+    { name: "Apr", value: 20 },
+    { name: "May", value: 50 },
+    { name: "Jun", value: 80 },
+    { name: "Jul", value: 40 },
+    { name: "Aug", value: 55 },
+    { name: "Sep", value: 70 },
+    { name: "Oct", value: 90 },
+    { name: "Nov", value: 50 },
+    { name: "Dec", value: 95 },
   ];
 
-  const orders = [
+  const recentActivity = [
     {
-      key: "1",
-      customer: "Elle Amberson",
-      avatar: "https://randomuser.me/api/portraits/men/1.jpg",
-      date: "15 Nov, 2022",
-      item: "User",
+      key: 1,
+      type: "Inquiry",
+      detail: "New inquiry on Model A",
+      date: "2025-02-17",
     },
     {
-      key: "2",
-      customer: "Anna Catmire",
-      avatar: "https://randomuser.me/api/portraits/women/2.jpg",
-      date: "25 Nov, 2022",
-      item: "Vendor",
+      key: 2,
+      type: "Message",
+      detail: "Customer sent a message",
+      date: "2025-02-16",
     },
-    {
-      key: "3",
-      customer: "Laura Dagson",
-      avatar: "https://randomuser.me/api/portraits/women/3.jpg",
-      date: "26 Nov, 2022",
-      item: "User",
-    },
-    {
-      key: "4",
-      customer: "Rachel Green",
-      avatar: "https://randomuser.me/api/portraits/women/4.jpg",
-      date: "28 Nov, 2022",
-      item: "User",
-    },
+    { key: 3, type: "Sale", detail: "Model B was sold", date: "2025-02-15" },
   ];
 
   return (
@@ -93,56 +80,48 @@ function Dashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 ">
-        <DashboardCard
-          title="New Users"
-          value="34.7k"
-          icon={<UserOutlined />}
-          description="23 (22%)"
-          change="23 (22%)"
-          changeType="increase"
-        />
-        <DashboardCard
-          title="Total Sales"
-          value="$34,545"
-          icon={<DollarOutlined />}
-          description="Current month"
-        />
-        <DashboardCard
-          title="Pending Leads"
-          value="450"
-          icon={<DatabaseOutlined />}
-          description="50 in hot leads"
-        />
-
-        <Card className="col-span-1 shadow-lg">
-          <h3 className="text-lg font-bold mb-2">Sales Statistic</h3>
-          <ResponsiveContainer width="100%" height={100}>
-            <PieChart>
-              <Pie data={data} dataKey="value" outerRadius={40} fill="#8884d8">
-                {data.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
-              </Pie>
-            </PieChart>
-          </ResponsiveContainer>
-          <p className="text-center font-bold text-lg">45,764 Total</p>
-        </Card>
+      <div className="grid grid-cols-1 md:grid-cols-4  gap-4 p-6">
+        {data.map((item, index) => (
+          <Card
+            key={index}
+            className="shadow-lg rounded-lg p-4 border relative"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-500 font-medium">{item.name}</p>
+                <h2 className="text-2xl font-bold">
+                  {item.name === "Revenue" ? `$${item.value}` : item.value}
+                </h2>
+                <p
+                  className={
+                    item.name === "Profit" ? "text-red-500" : "text-green-500"
+                  }
+                >
+                  {item.name === "Profit" ? "▼ -2.3%" : "▲ +4.6%"}
+                </p>
+              </div>
+              <div
+                className="w-12 h-12 flex items-center justify-center rounded-lg bg-gray-100"
+                style={{ color: item.color }}
+              >
+                {item.icon}
+              </div>
+            </div>
+            <ResponsiveContainer width="100%" height={60}>
+              <BarChart data={mounthlydata}>
+                <Tooltip cursor={{ fill: "transparent" }} />
+                <Bar dataKey="value" fill="#4285F4" radius={[5, 5, 0, 0]} />
+                <Bar dataKey="value" fill="#FBBC05" radius={[5, 5, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </Card>
+        ))}
       </div>
 
       <Divider />
 
       {/* Monthly Active Users and Revenue Charts */}
       <Row gutter={16}>
-        <Col span={12}>
-          <Card
-            title="Monthly Active Users (in K)"
-            bordered={false}
-            style={{ borderRadius: "8px", backgroundColor: "#e6f7ff" }}
-          >
-            <MonthlyActiveUsersChart />
-          </Card>
-        </Col>
         <Col span={12}>
           <Card
             title="Revenue"
@@ -159,7 +138,15 @@ function Dashboard() {
       >
         <Card className="col-span-3">
           <h3 className="text-lg font-bold mb-4">Recent User List</h3>
-          <Table columns={columns} dataSource={orders} pagination={false} />
+          <Table
+            columns={[
+              { title: "Type", dataIndex: "type" },
+              { title: "Detail", dataIndex: "detail" },
+              { title: "Date", dataIndex: "date" },
+            ]}
+            dataSource={recentActivity}
+            pagination={false}
+          />
         </Card>
       </div>
     </div>

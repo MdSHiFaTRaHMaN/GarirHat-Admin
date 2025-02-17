@@ -1,5 +1,5 @@
 import { Avatar } from "antd";
-import Logo from "../assets/garirhatlogo.png";
+import Logo from "../assets/garirhatlogo007.png";
 import { UserOutlined } from "@ant-design/icons";
 const Navbar = () => {
   return (
