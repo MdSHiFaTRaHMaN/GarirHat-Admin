@@ -8,7 +8,7 @@ import {
   Upload,
   message,
 } from "antd";
-import { CarOutlined, LoadingOutlined, PlusOutlined } from "@ant-design/icons";
+import { CarOutlined, PlusOutlined } from "@ant-design/icons";
 import { useAlFeature, useAlLocation } from "../../api/api";
 import { useState } from "react";
 
@@ -18,6 +18,25 @@ const AddMyCar = () => {
   const [form] = Form.useForm();
   const { alLocation } = useAlLocation();
   const { alFeature } = useAlFeature();
+
+  // price calculate
+
+  const [values, setValues] = useState({
+    regularPrice: 0,
+    vatTax: 0,
+    repairPrice: 0,
+    otherCost: 0,
+  });
+
+  const handleChangePrice = (name, value) => {
+    setValues((prev) => ({
+      ...prev,
+      [name]: Number(value) || 0, // Convert input to number
+    }));
+  };
+
+  const totalCost =
+    values.regularPrice + values.vatTax + values.repairPrice + values.otherCost;
 
   const [selectedDivision, setSelectedDivision] = useState(null);
   const [selectedDistrict, setSelectedDistrict] = useState(null);
@@ -57,9 +76,10 @@ const AddMyCar = () => {
   const onFinish = (values) => {
     console.log("Form Submitted:", values);
   };
+
   return (
     <div className="mx-auto bg-white p-6">
-      <h2 className="text-2xl font-bold mb-4 flex items-center justify-center gap-2">
+      <h2 className="text-3xl font-semibold mb-4 flex items-center justify-center gap-2 font-MyStyle">
         <CarOutlined />
         Sell your car from home for the best price
       </h2>
@@ -325,10 +345,77 @@ const AddMyCar = () => {
             },
           ]}
         />
-         {/* Selling price  */}
-         <Form.Item label="Selling Price" name="selling-price" className="mt-3">
-            <Input placeholder="Enter Selling Price" className="py-[10px]" />
-          </Form.Item>
+        {/* Price Calculate  */}
+        <Collapse
+          className="my-5"
+          items={[
+            {
+              key: "1",
+              label: "Price Calculate",
+              children: (
+                <div className="grid grid-cols-2 gap-x-4">
+                  {/* Front-legroom  */}
+                  <Form.Item label="Car Reguler Price" name="reguler-price">
+                    <Input
+                      type="number"
+                      className="py-[10px]"
+                      placeholder="Enter Car Reguler Price"
+                      onChange={(e) =>
+                        handleChangePrice("regularPrice", e.target.value)
+                      }
+                    />
+                  </Form.Item>
+                  {/* Back legroom  */}
+                  <Form.Item label="Vat & Tax Cost " name="vat-tax">
+                    <Input
+                      type="number"
+                      className="py-[10px]"
+                      placeholder="Enter Vat & Tax Cost"
+                      onChange={(e) =>
+                        handleChangePrice("vatTax", e.target.value)
+                      }
+                    />
+                  </Form.Item>
+                  {/* Cargo volume  */}
+                  <Form.Item label="Enter Repair Cost" name="repair-parice">
+                    <Input
+                      type="number"
+                      className="py-[10px]"
+                      placeholder="Enter Front Back legroom"
+                      onChange={(e) =>
+                        handleChangePrice("repairPrice", e.target.value)
+                      }
+                    />
+                  </Form.Item>
+                  {/* Other Cost  */}
+                  <Form.Item label="Enter Other Cost" name="other-cost">
+                    <Input
+                      type="number"
+                      className="py-[10px]"
+                      placeholder="Enter Other Cost"
+                      onChange={(e) =>
+                        handleChangePrice("otherCost", e.target.value)
+                      }
+                    />
+                  </Form.Item>
+                  <div>
+                    <h1 className="text-2xl font-MyStyle">
+                      Total Car Price With Cost:{" "}
+                      <span className="font-semibold">
+                        {totalCost.toLocaleString()} Taka
+                      </span>
+                    </h1>
+                  </div>
+                </div>
+              ),
+            },
+          ]}
+        />
+        {/* Selling price  */}
+        <Form.Item label="Selling Price" name="selling-price" className="mt-3">
+          <Input placeholder="Enter Selling Price" className="py-[10px]" />
+        </Form.Item>
+        <span>Update Image</span>
         <Upload
           name="images"
           listType="picture-card"
@@ -351,7 +438,10 @@ const AddMyCar = () => {
           </div>
         </Upload>
         <Form.Item>
-          <Button type="primary" htmlType="submit" className="w-full mt-5">
+          <Button
+            htmlType="submit"
+            className="w-full mt-5 bg-ButtonColor hover:!bg-ButtonHover hover:!text-white font-semibold text-white py-5"
+          >
             Submit
           </Button>
         </Form.Item>

@@ -1,24 +1,14 @@
-import { Button, Row, Col, Card, Divider, Table, Avatar, Tooltip } from "antd";
+import { Button, Row, Col, Card, Divider, Table, Tooltip } from "antd";
 import {
   ReloadOutlined,
   ShareAltOutlined,
   EllipsisOutlined,
-  UserOutlined,
-  DollarOutlined,
-  DatabaseOutlined,
 } from "@ant-design/icons";
-import RevenueChart from "../../components/RevenueChart.js";
-import {
-  Bar,
-  BarChart,
-  Cell,
-  Pie,
-  PieChart,
-  ResponsiveContainer,
-} from "recharts";
-import { FaChartBar, FaFileInvoice, FaMoneyBill, FaUser } from "react-icons/fa";
-
-// import DashboardCard from "../components/DashboardCard.jsx";
+// import RevenueChart from "../../components/RevenueChart.js";
+import { Bar, BarChart, ResponsiveContainer } from "recharts";
+import { FaChartBar, FaMoneyBill, FaUser } from "react-icons/fa";
+import PostViewChart from "../../components/PostViewChart.jsx";
+import { FaBangladeshiTakaSign } from "react-icons/fa6";
 
 function Dashboard() {
   const onRefresh = () => {
@@ -28,9 +18,10 @@ function Dashboard() {
   const data = [
     {
       name: "Total Earning",
-      value: "৳34 K",
+      value: "৳34 Crore",
       color: "#4225F4",
-      icon: <FaUser />,
+      icon: <FaBangladeshiTakaSign />
+      ,
     },
     { name: "Customers", value: 1485, color: "#4285F4", icon: <FaUser /> },
     { name: "Revenue", value: 5873, color: "#FBBC05", icon: <FaMoneyBill /> },
@@ -120,8 +111,16 @@ function Dashboard() {
 
       <Divider />
 
+      <Card
+        title="View Post Chart"
+        bordered={false}
+        style={{ borderRadius: "8px", backgroundColor: "#fff1f0" }}
+        className=""
+      >
+        <PostViewChart />
+      </Card>
       {/* Monthly Active Users and Revenue Charts */}
-      <Row gutter={16}>
+      {/* <Row gutter={16} className="w-full">
         <Col span={12}>
           <Card
             title="Revenue"
@@ -131,7 +130,7 @@ function Dashboard() {
             <RevenueChart />
           </Card>
         </Col>
-      </Row>
+      </Row> */}
       <div
         className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6 font-custom"
         style={{ fontFamily: "'Outfit', sans-serif" }}
