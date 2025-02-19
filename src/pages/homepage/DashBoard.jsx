@@ -1,4 +1,4 @@
-import { Button, Row, Col, Card, Divider, Table, Tooltip } from "antd";
+import { Button, Card, Divider, Tooltip } from "antd";
 import {
   ReloadOutlined,
   ShareAltOutlined,
@@ -41,22 +41,6 @@ function Dashboard() {
     { name: "Oct", value: 90 },
     { name: "Nov", value: 50 },
     { name: "Dec", value: 95 },
-  ];
-
-  const recentActivity = [
-    {
-      key: 1,
-      type: "Inquiry",
-      detail: "New inquiry on Model A",
-      date: "2025-02-17",
-    },
-    {
-      key: 2,
-      type: "Message",
-      detail: "Customer sent a message",
-      date: "2025-02-16",
-    },
-    { key: 3, type: "Sale", detail: "Model B was sold", date: "2025-02-15" },
   ];
 
   return (
@@ -131,23 +115,6 @@ function Dashboard() {
           </Card>
         </Col>
       </Row> */}
-      <div
-        className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6 font-custom"
-        style={{ fontFamily: "'Outfit', sans-serif" }}
-      >
-        <Card className="col-span-3">
-          <h3 className="text-lg font-bold mb-4">Recent User List</h3>
-          <Table
-            columns={[
-              { title: "Type", dataIndex: "type" },
-              { title: "Detail", dataIndex: "detail" },
-              { title: "Date", dataIndex: "date" },
-            ]}
-            dataSource={recentActivity}
-            pagination={false}
-          />
-        </Card>
-      </div>
     </div>
   );
 }

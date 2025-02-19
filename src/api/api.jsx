@@ -32,9 +32,8 @@ API.interceptors.request.use((config) => {
   
     return { alLocation, isLoading, isError, error, refetch };
   };
-// Products list
 
-
+// AlFeature list
   export const useAlFeature = () => {
     const getAlFeature = async () => {
       const response = await API.get("/feature/all");
@@ -55,4 +54,49 @@ API.interceptors.request.use((config) => {
     return { alFeature, isLoading, isError, error, refetch };
   };
   
+  
+// all brand list
+  export const useAllBrand = () => {
+    const getAllBrand = async () => {
+      const response = await API.get("/brand/all");
+      return response.data.data;
+    };
+  
+    const {
+      data: allBrand = [],
+      isLoading,
+      isError,
+      error,
+      refetch,
+    } = useQuery({
+      queryKey: ["allBrand"],
+      queryFn: getAllBrand,
+    });
+  
+    return { allBrand, isLoading, isError, error, refetch };
+  };
+
+// all Model with Single brand 
+
+export const useModelByBrand = (brandID) => {
+  const getModelByBrand = async () => {
+    // const response = await API.get(`/model/all?brand_id=${brandID}`);
+    const response = await API.get(`/model?brand_id=${brandID}`);
+    console.log(response)
+    return response.data;
+  };
+  const {
+    data: modelByBrand = [],
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["modelByBrand", brandID],
+    queryFn: getModelByBrand,
+  });
+  return { modelByBrand, isLoading, isError, error, refetch };
+};
+  
+
   

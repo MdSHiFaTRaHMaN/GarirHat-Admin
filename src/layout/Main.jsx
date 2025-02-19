@@ -38,12 +38,12 @@ const Main = () => {
   }, []);
 
   return (
-    <Layout className="min-h-screen">
+    <Layout className="min-h-screen bg-gray-100">
       {/* Header */}
       <Header className="bg-white sticky top-0 z-50 shadow-md w-full flex items-center px-6">
         <Navbar showDrawer={showDrawer} />
       </Header>
-
+      <button onClick={showDrawer}></button>
       <Layout>
         {/* Sidebar (Desktop) */}
         {isLargeScreen && (
@@ -58,16 +58,21 @@ const Main = () => {
         {/* Sidebar Drawer (Mobile) */}
         <Drawer
           title="Navigation"
-          placement="left"
+          placement="right"
           onClose={closeDrawer}
           open={drawerVisible}
+          style={{ backgroundColor: "#f43f5e" }} // Rose color
           bodyStyle={{ padding: 0 }}
         >
           <Sidebar onClick={closeDrawer} />
         </Drawer>
 
         {/* Main Content Area */}
-        <Layout className={`transition-all duration-300 ${isLargeScreen ? "ml-[260px]" : "ml-0"}`}>
+        <Layout
+          className={`transition-all duration-300 ${
+            isLargeScreen ? "ml-[260px]" : "ml-0"
+          }`}
+        >
           <Content className="px-6 pt-6">
             {/* Breadcrumbs */}
             <Breadcrumb className="mb-4 text-gray-600">
@@ -79,7 +84,7 @@ const Main = () => {
             </Breadcrumb>
 
             {/* Dynamic Content */}
-            <div className="bg-white shadow-md rounded-lg p-6 min-h-[80vh]">
+            <div className="bg-white shadow-lg rounded-xl p-6 min-h-[80vh] border border-gray-200">
               <Outlet />
             </div>
           </Content>

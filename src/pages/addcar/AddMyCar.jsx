@@ -7,20 +7,50 @@ import {
   Collapse,
   Upload,
   message,
+  Card,
+  Badge,
 } from "antd";
 import { CarOutlined, PlusOutlined } from "@ant-design/icons";
-import { useAlFeature, useAlLocation } from "../../api/api";
-import { useState } from "react";
+import {
+  useAlFeature,
+  useAllBrand,
+  useAlLocation,
+  useModelByBrand,
+} from "../../api/api";
+import { useEffect, useState } from "react";
+import AddCarModel from "./AddCarModel";
 
 const { Option } = Select;
 
 const AddMyCar = () => {
+  // search feature
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedDivision, setSelectedDivision] = useState(null);
+  const [selectedDistrict, setSelectedDistrict] = useState(null);
+  const [filteredDistricts, setFilteredDistricts] = useState([]);
+  const [filteredUpazilas, setFilteredUpazilas] = useState([]);
+  const [brandID, setBrandID] = useState();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [years, setYears] = useState([]);
+
   const [form] = Form.useForm();
-  const { alLocation } = useAlLocation();
-  const { alFeature } = useAlFeature();
+  const { alLocation } = useAlLocation(); //all divition with distict with Upozila
+  const { alFeature } = useAlFeature(); // Car all feature
+  const { allBrand } = useAllBrand(); // Car All Brand
+  const { modelByBrand, isLoading } = useModelByBrand(brandID);
+  //  add custom model open
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  useEffect(() => {
+    fetch("/year.json") // Fetching from the public folder
+      .then((response) => response.json())
+      .then((data) => setYears(data.years))
+      .catch((error) => console.error("Error fetching years:", error));
+  }, []);
 
   // price calculate
-
   const [values, setValues] = useState({
     regularPrice: 0,
     vatTax: 0,
@@ -34,14 +64,8 @@ const AddMyCar = () => {
       [name]: Number(value) || 0, // Convert input to number
     }));
   };
-
   const totalCost =
     values.regularPrice + values.vatTax + values.repairPrice + values.otherCost;
-
-  const [selectedDivision, setSelectedDivision] = useState(null);
-  const [selectedDistrict, setSelectedDistrict] = useState(null);
-  const [filteredDistricts, setFilteredDistricts] = useState([]);
-  const [filteredUpazilas, setFilteredUpazilas] = useState([]);
 
   // Handle Division Change
   const handleDivisionChange = (value) => {
@@ -59,13 +83,12 @@ const AddMyCar = () => {
     setFilteredUpazilas(selectedDist ? selectedDist.upazilas : []);
   };
 
-  // search feature
-  const [searchTerm, setSearchTerm] = useState("");
   // Filtered Features Based on Search Input
   const filteredFeatures = alFeature.filter((feature) =>
     feature.feature_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // image upload
   const [fileList, setFileList] = useState([]);
 
   const handleChange = ({ fileList }) => {
@@ -77,6 +100,10 @@ const AddMyCar = () => {
     console.log("Form Submitted:", values);
   };
 
+  const handleSelectBrand = (value) => {
+    setBrandID(value);
+  };
+
   return (
     <div className="mx-auto bg-white p-6">
       <h2 className="text-3xl font-semibold mb-4 flex items-center justify-center gap-2 font-MyStyle">
@@ -86,31 +113,60 @@ const AddMyCar = () => {
       <Form form={form} layout="vertical" onFinish={onFinish}>
         <div className="grid grid-cols-2 gap-x-4">
           {/* car make  */}
-          <Form.Item
-            label="Make"
-            name="make"
-            rules={[{ required: true, message: "Please enter make" }]}
-          >
-            <Input placeholder="Enter Car Make" className="py-[10px]" />
+          <Form.Item label="Make" name="make">
+            <Select
+              showSearch
+              className="h-[44px]"
+              placeholder="Select Car Make"
+              rules={[{ required: true, message: "Please Select make" }]}
+              optionFilterProp="label"
+              options={allBrand.map((location) => ({
+                value: location.id,
+                label: location.brand_name,
+              }))}
+              onChange={handleSelectBrand}
+            />
           </Form.Item>
-          {/* car mdoel  */}
-          <Form.Item
-            label="Model"
-            name="model"
-            rules={[{ required: true, message: "Please enter model" }]}
-          >
-            <Input placeholder="Enter Car Model" className="py-[10px]" />
+          {/* car model  */}
+          <Form.Item name="model">
+            <div className="flex justify-between items-center">
+              <h1>Model</h1>
+              <button
+                disabled={!brandID}
+                onClick={showModal}
+                className={`p-0.5 m-0.5 font-semibold rounded ${
+                  !brandID
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    : "bg-gray-100 text-TextColor"
+                }`}
+              >
+                + Custom Add Model
+              </button>
+            </div>
+            <Select
+              showSearch
+              className="h-[44px] w-full"
+              placeholder="Select Car Model"
+              optionFilterProp="label"
+              loading={isLoading}
+              options={modelByBrand?.data?.model?.map((model) => ({
+                value: model.id,
+                label: model.model_name,
+              }))}
+              disabled={!brandID}
+            />
           </Form.Item>
           {/* car year  */}
-          <Form.Item
-            label="Year"
-            name="year"
-            rules={[{ required: true, message: "Please enter year" }]}
-          >
-            <Input
-              type="number"
-              placeholder="Enter Year"
-              className="py-[10px]"
+          <Form.Item label="Year" name="year">
+            <Select
+              showSearch
+              className="h-[44px]"
+              placeholder="Select Enter Year"
+              optionFilterProp="label"
+              options={years.map((year) => ({
+                value: year,
+                label: year.toString(), // Ensure label is a string
+              }))}
             />
           </Form.Item>
           {/* Trim  */}
@@ -406,6 +462,16 @@ const AddMyCar = () => {
                       </span>
                     </h1>
                   </div>
+                  <Card className="rounded bg-white border border-gray-200">
+                    <div className="flex flex-col items-center">
+                      <h2 className="text-xl font-semibold text-gray-800">
+                        Recommendation Price
+                      </h2>
+                      <p className="text-3xl font-bold text-blue-600 mt-2">
+                        ৳25,50,000
+                      </p>
+                    </div>
+                  </Card>
                 </div>
               ),
             },
@@ -446,6 +512,11 @@ const AddMyCar = () => {
           </Button>
         </Form.Item>
       </Form>
+      <AddCarModel
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+        brandID={brandID}
+      />
     </div>
   );
 };
