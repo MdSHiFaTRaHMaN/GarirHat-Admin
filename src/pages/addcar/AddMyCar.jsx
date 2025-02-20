@@ -8,7 +8,7 @@ import {
   Upload,
   message,
   Card,
-  Badge,
+  DatePicker,
 } from "antd";
 import { CarOutlined, PlusOutlined } from "@ant-design/icons";
 import {
@@ -19,6 +19,9 @@ import {
 } from "../../api/api";
 import { useEffect, useState } from "react";
 import AddCarModel from "./AddCarModel";
+import AddCarBrand from "./AddCarBrand";
+import AddFeatureModel from "./AddFeatureModel";
+import { FaMinus } from "react-icons/fa";
 
 const { Option } = Select;
 
@@ -31,11 +34,13 @@ const AddMyCar = () => {
   const [filteredUpazilas, setFilteredUpazilas] = useState([]);
   const [brandID, setBrandID] = useState();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [years, setYears] = useState([]);
+  const [isAddBrandModel, setIsAddBrandModel] = useState(false);
+  const [isFeatureAddModel, setIsFetureAddModel] = useState(false);
+  const [color, setColor] = useState([]);
 
   const [form] = Form.useForm();
   const { alLocation } = useAlLocation(); //all divition with distict with Upozila
-  const { alFeature } = useAlFeature(); // Car all feature
+  const { alFeature, isLoadingFeature } = useAlFeature(); // Car all feature
   const { allBrand } = useAllBrand(); // Car All Brand
   const { modelByBrand, isLoading } = useModelByBrand(brandID);
   //  add custom model open
@@ -44,10 +49,10 @@ const AddMyCar = () => {
   };
 
   useEffect(() => {
-    fetch("/year.json") // Fetching from the public folder
+    fetch("/colorlist.json")
       .then((response) => response.json())
-      .then((data) => setYears(data.years))
-      .catch((error) => console.error("Error fetching years:", error));
+      .then((data) => setColor(data.colors))
+      .catch((error) => console.error("Error fetching Color:", error));
   }, []);
 
   // price calculate
@@ -113,11 +118,21 @@ const AddMyCar = () => {
       <Form form={form} layout="vertical" onFinish={onFinish}>
         <div className="grid grid-cols-2 gap-x-4">
           {/* car make  */}
-          <Form.Item label="Make" name="make">
+          <Form.Item name="make">
+            <div className="flex items-center justify-between">
+              <h1>Make</h1>
+              <button
+                onClick={() => setIsAddBrandModel(true)}
+                className="p-0.5 m-0.5 font-semibold rounded text-TextColor"
+              >
+                + Custom Add Brand
+              </button>
+            </div>
             <Select
               showSearch
               className="h-[44px]"
               placeholder="Select Car Make"
+              loading={isLoading}
               rules={[{ required: true, message: "Please Select make" }]}
               optionFilterProp="label"
               options={allBrand.map((location) => ({
@@ -136,8 +151,8 @@ const AddMyCar = () => {
                 onClick={showModal}
                 className={`p-0.5 m-0.5 font-semibold rounded ${
                   !brandID
-                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                    : "bg-gray-100 text-TextColor"
+                    ? "text-gray-500 cursor-not-allowed"
+                    : "text-TextColor"
                 }`}
               >
                 + Custom Add Model
@@ -158,15 +173,10 @@ const AddMyCar = () => {
           </Form.Item>
           {/* car year  */}
           <Form.Item label="Year" name="year">
-            <Select
-              showSearch
-              className="h-[44px]"
+            <DatePicker
+              className="h-[44px] w-full"
               placeholder="Select Enter Year"
-              optionFilterProp="label"
-              options={years.map((year) => ({
-                value: year,
-                label: year.toString(), // Ensure label is a string
-              }))}
+              picker="year"
             />
           </Form.Item>
           {/* Trim  */}
@@ -203,27 +213,77 @@ const AddMyCar = () => {
           </Form.Item>
           {/* Exterior Color */}
           <Form.Item label="Exterior Color" name="exteriorColor">
-            <Input placeholder="Enter Exterior Color" className="py-[10px]" />
+            <Select
+              showSearch
+              className="h-[44px]"
+              placeholder="Select Exterior Color"
+              rules={[
+                { required: true, message: "Please select Exterior Color" },
+              ]}
+              optionFilterProp="title"
+              options={color.map((location) => ({
+                value: location.name,
+                title: location.name,
+                label: (
+                  <div className="flex items-center gap-2">
+                    <span
+                      className="h-4 w-4 rounded border border-gray-300"
+                      style={{ backgroundColor: location.hex }}
+                    ></span>
+                    <h4>{location.name}</h4>
+                  </div>
+                ),
+              }))}
+            />
           </Form.Item>
           {/* Interior color  */}
           <Form.Item label="Interior color" name="enterior-color">
-            <Input placeholder="Enter Interior color" className="py-[10px]" />
+            <Select
+              showSearch
+              className="h-[44px]"
+              placeholder="Select Interior color"
+              rules={[
+                { required: true, message: "Please select Interior color" },
+              ]}
+              optionFilterProp="title"
+              options={color.map((location) => ({
+                value: location.name,
+                title: location.name,
+                label: (
+                  <div className="flex items-center gap-2">
+                    <span
+                      className="h-4 w-4 rounded border border-gray-300"
+                      style={{ backgroundColor: location.hex }}
+                    ></span>
+                    <h4>{location.name}</h4>
+                  </div>
+                ),
+              }))}
+            />
           </Form.Item>
           {/* MPG  */}
           <Form.Item label="MPG" name="MPG">
             <Input placeholder="Enter MPG" className="py-[10px]" />
           </Form.Item>
-          {/* Stock number  */}
-          <Form.Item label="Stock number" name="Stock-number">
-            <Input placeholder="Enter Stock number" className="py-[10px]" />
+          {/* Registation Year  */}
+          <Form.Item label="Registation Year" name="registation-year">
+            <Input placeholder="Enter Registation Year" className="py-[10px]" />
+          </Form.Item>
+          {/* RTO   */}
+          <Form.Item label="RTO" name="rto">
+            <Input placeholder="Enter RTO" className="py-[10px]" />
           </Form.Item>
           {/* fuelType */}
           <Form.Item label="Fuel Type" name="fuelType">
             <Select placeholder="Select Fuel Type" className="h-[44px]">
               <Option value="Petrol">Petrol</Option>
               <Option value="Diesel">Diesel</Option>
+              <Option value="Hybrid">Hybrid</Option>
               <Option value="CNG">CNG</Option>
+              <Option value="Electric">Electric</Option>
               <Option value="LPG">LPG</Option>
+              <Option value="Petrol-cng">Petrol-CNG</Option>
+              <Option value="Petrol-lpg">Petrol-LPG</Option>
             </Select>
           </Form.Item>
           {/* Condition  */}
@@ -231,6 +291,9 @@ const AddMyCar = () => {
             <Select placeholder="Select Condition" className="h-[44px]">
               <Option value="New">New</Option>
               <Option value="Used">Used</Option>
+              <Option value="pre-own">Pre-Own</Option>
+              <Option value="recondition">Recondition</Option>
+              <Option value="sellbyowner">Sell By Owner</Option>
             </Select>
           </Form.Item>
           {/* Loan Condition  */}
@@ -299,6 +362,12 @@ const AddMyCar = () => {
               label: "Safety Features",
               children: (
                 <Form.Item name="safetyFeatures">
+                  <button
+                    onClick={() => setIsFetureAddModel(true)}
+                    className="text-TextColor bg-gray-100 p-1 rounded font-semibold"
+                  >
+                    + Add Custom Feature
+                  </button>
                   {/* Search Input */}
                   <Input
                     className="my-3 py-[10px]"
@@ -309,11 +378,15 @@ const AddMyCar = () => {
 
                   {/* Checkbox Group */}
                   <Checkbox.Group className="grid grid-cols-4">
-                    {filteredFeatures.map((feature) => (
-                      <Checkbox key={feature.id} value={feature.feature_name}>
-                        {feature.feature_name}
-                      </Checkbox>
-                    ))}
+                    {isLoadingFeature ? (
+                      <span>Loading</span>
+                    ) : (
+                      filteredFeatures.map((feature) => (
+                        <Checkbox key={feature.id} value={feature.feature_name}>
+                          {feature.feature_name}
+                        </Checkbox>
+                      ))
+                    )}
                   </Checkbox.Group>
                 </Form.Item>
               ),
@@ -454,8 +527,8 @@ const AddMyCar = () => {
                       }
                     />
                   </Form.Item>
-                  <div>
-                    <h1 className="text-2xl font-MyStyle">
+                  <div className="rounded bg-white border border-gray-200">
+                    <h1 className="text-2xl font-MyStyle text-center mt-12">
                       Total Car Price With Cost:{" "}
                       <span className="font-semibold">
                         {totalCost.toLocaleString()} Taka
@@ -463,12 +536,16 @@ const AddMyCar = () => {
                     </h1>
                   </div>
                   <Card className="rounded bg-white border border-gray-200">
-                    <div className="flex flex-col items-center">
-                      <h2 className="text-xl font-semibold text-gray-800">
-                        Recommendation Price
-                      </h2>
-                      <p className="text-3xl font-bold text-blue-600 mt-2">
+                    <h2 className="text-xl text-center font-semibold text-gray-800">
+                      Recommendation Price
+                    </h2>
+                    <div className="flex justify-center items-center gap-2">
+                      <p className="text-xl font-bold text-TextColor mt-2">
                         ৳25,50,000
+                      </p>
+                      <FaMinus className="mt-3"/>
+                      <p className="text-xl font-bold text-TextColor mt-2">
+                        ৳26,50,000
                       </p>
                     </div>
                   </Card>
@@ -516,6 +593,14 @@ const AddMyCar = () => {
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
         brandID={brandID}
+      />
+      <AddCarBrand
+        isModalOpen={isAddBrandModel}
+        setIsAddBrandModel={setIsAddBrandModel}
+      />
+      <AddFeatureModel
+        isModalOpen={isFeatureAddModel}
+        setIsFetureAddModel={setIsFetureAddModel}
       />
     </div>
   );

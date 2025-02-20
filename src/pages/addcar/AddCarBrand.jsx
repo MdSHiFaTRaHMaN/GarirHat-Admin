@@ -2,35 +2,30 @@ import { Input, Modal, message } from "antd";
 import { useState } from "react";
 import { API } from "../../api/api";
 
-const AddCarModel = ({ isModalOpen, setIsModalOpen, brandID }) => {
-  const [modelName, setModelName] = useState("");
+const AddCarBrand = ({ isModalOpen, setIsAddBrandModel}) => {
+  const [brandName, setBrandName] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleOk = async () => {
-    if (!modelName.trim()) {
-      message.error("Model name cannot be empty!");
+    if (!brandName.trim()) {
+      message.error("Brand name cannot be empty!");
       return;
     }
-
-    const addModel = {
-        model_name: modelName,
+    const addBrand = {
+        brand_name: brandName,
         status: "pending",
         image: "On The Way",
-        brand_id: brandID
     }
-
-    console.log(addModel);
-
     setLoading(true);
     try {
         setLoading(true);
-        const response = await API.post("/model/create", addModel);
+        const response = await API.post("/Brand/create", addBrand);
         if (response.status == 200) {
           message.success("Postal Code add Successfully");
         }
         console.log(response, "resposne");
         setLoading(false);
-        setIsModalOpen(false);
+        setIsAddBrandModel(false);
       } catch (error) {
         console.error(error);
         message.error("Something went wrong");
@@ -39,25 +34,25 @@ const AddCarModel = ({ isModalOpen, setIsModalOpen, brandID }) => {
   };
 
   const handleCancel = () => {
-    setIsModalOpen(false);
-    setModelName("");
+    setIsAddBrandModel(false);
+    setBrandName("");
   };
 
   return (
     <Modal
-      title="Add Custom Model"
+      title="Add Custom Brand"
       open={isModalOpen}
       onOk={handleOk}
       onCancel={handleCancel}
       confirmLoading={loading}
     >
       <Input
-        placeholder="Enter model name"
-        value={modelName}
-        onChange={(e) => setModelName(e.target.value)}
+        placeholder="Enter Brand name"
+        value={brandName}
+        onChange={(e) => setBrandName(e.target.value)}
       />
     </Modal>
   );
 };
 
-export default AddCarModel;
+export default AddCarBrand;

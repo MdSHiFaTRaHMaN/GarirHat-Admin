@@ -1,8 +1,14 @@
-import { FaFacebook, FaRocket } from "react-icons/fa";
+import { FaFacebook } from "react-icons/fa";
 import Logo from "../assets/gariir.png";
 import { Divider } from "antd";
 import { FcGoogle } from "react-icons/fc";
+import { useContext } from "react";
+import { AuthContext } from "../authprovider/AuthProvider";
+
+
 const Login = () => {
+  const {handleGoogle} = useContext(AuthContext);
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-200">
       <div className="flex w-9/12 mx-auto rounded-lg bg-white shadow-lg">
@@ -63,7 +69,7 @@ const Login = () => {
             Or
           </Divider>
           <div className="flex gap-4">
-            <button className="w-full flex items-center justify-center gap-2 bg-gray-300 text-gray-700 py-2 rounded hover:bg-gray-400">
+            <button onClick={handleGoogle} className="w-full flex items-center justify-center gap-2 bg-gray-300 text-gray-700 py-2 rounded hover:bg-gray-400">
               <FcGoogle /> Continus With Google
             </button>
             <button className="w-full flex items-center justify-center gap-2 bg-gray-300 text-gray-700 py-2 rounded hover:bg-gray-400">

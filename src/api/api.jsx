@@ -42,7 +42,7 @@ API.interceptors.request.use((config) => {
   
     const {
       data: alFeature = [],
-      isLoading,
+      isLoadingFeature,
       isError,
       error,
       refetch,
@@ -51,14 +51,14 @@ API.interceptors.request.use((config) => {
       queryFn: getAlFeature,
     });
   
-    return { alFeature, isLoading, isError, error, refetch };
+    return { alFeature, isLoadingFeature, isError, error, refetch };
   };
   
   
 // all brand list
   export const useAllBrand = () => {
     const getAllBrand = async () => {
-      const response = await API.get("/brand/all");
+      const response = await API.get("/brand");
       return response.data.data;
     };
   

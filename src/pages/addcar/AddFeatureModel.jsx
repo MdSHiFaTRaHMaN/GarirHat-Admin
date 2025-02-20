@@ -2,35 +2,32 @@ import { Input, Modal, message } from "antd";
 import { useState } from "react";
 import { API } from "../../api/api";
 
-const AddCarModel = ({ isModalOpen, setIsModalOpen, brandID }) => {
-  const [modelName, setModelName] = useState("");
+const AddFeatureModel = ({ isModalOpen, setIsFetureAddModel, }) => {
+  const [featureName, setFeatureName] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleOk = async () => {
-    if (!modelName.trim()) {
-      message.error("Model name cannot be empty!");
+    if (!featureName.trim()) {
+      message.error("Feature name cannot be empty!");
       return;
     }
 
-    const addModel = {
-        model_name: modelName,
+    const addFeature = {
+        feature_name: featureName,
         status: "pending",
-        image: "On The Way",
-        brand_id: brandID
+        category_id: 1,
     }
-
-    console.log(addModel);
 
     setLoading(true);
     try {
         setLoading(true);
-        const response = await API.post("/model/create", addModel);
+        const response = await API.post("/feature/create", addFeature);
         if (response.status == 200) {
-          message.success("Postal Code add Successfully");
+          message.success("Feature Code add Successfully");
         }
         console.log(response, "resposne");
         setLoading(false);
-        setIsModalOpen(false);
+        setIsFetureAddModel(false)
       } catch (error) {
         console.error(error);
         message.error("Something went wrong");
@@ -39,25 +36,25 @@ const AddCarModel = ({ isModalOpen, setIsModalOpen, brandID }) => {
   };
 
   const handleCancel = () => {
-    setIsModalOpen(false);
-    setModelName("");
+    setIsFetureAddModel(false);
+    setFeatureName("");
   };
 
   return (
     <Modal
-      title="Add Custom Model"
+      title="Add Custom Feature"
       open={isModalOpen}
       onOk={handleOk}
       onCancel={handleCancel}
       confirmLoading={loading}
     >
       <Input
-        placeholder="Enter model name"
-        value={modelName}
-        onChange={(e) => setModelName(e.target.value)}
+        placeholder="Enter Feature name"
+        value={featureName}
+        onChange={(e) => setFeatureName(e.target.value)}
       />
     </Modal>
   );
 };
 
-export default AddCarModel;
+export default AddFeatureModel;
