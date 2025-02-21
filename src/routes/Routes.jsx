@@ -7,7 +7,6 @@ import UserMessage from "../pages/usermessage/UserMessage";
 import UserProfile from "../pages/UserProfile";
 import MyCarList from "../pages/mycarlist/MyCarList";
 import CarDetails from "../pages/cardetailspage/CarDetails";
-import PrivateRoute from "./PrivateRoute";
 
 export const routes = createBrowserRouter([
   {
@@ -16,7 +15,7 @@ export const routes = createBrowserRouter([
   },
   {
     path: "/",
-    element: <PrivateRoute ><Main /></PrivateRoute>,
+    element: <Main />,
     children: [
       {
         path: "/",
@@ -24,25 +23,24 @@ export const routes = createBrowserRouter([
       },
       {
         path: "/add-my-car",
-        element: <AddMyCar />
+        element: <AddMyCar />,
       },
       {
         path: "/user-messages",
-        element: <UserMessage />
+        element: <UserMessage />,
       },
       {
         path: "/user-profile",
-        element: <UserProfile />
+        element: <UserProfile />,
       },
       {
         path: "/my-car-list",
-        element: <MyCarList />
+        element: <MyCarList />,
       },
       {
         path: "/car-details",
-        element: <CarDetails />
-      }
-
+        element: <CarDetails />,
+      },
     ],
   },
 ]);
