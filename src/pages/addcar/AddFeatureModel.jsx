@@ -2,7 +2,7 @@ import { Input, Modal, message } from "antd";
 import { useState } from "react";
 import { API } from "../../api/api";
 
-const AddFeatureModel = ({ isModalOpen, setIsFetureAddModel, }) => {
+const AddFeatureModel = ({ isModalOpen, setIsFetureAddModel, refetch }) => {
   const [featureName, setFeatureName] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -23,9 +23,9 @@ const AddFeatureModel = ({ isModalOpen, setIsFetureAddModel, }) => {
         setLoading(true);
         const response = await API.post("/feature/create", addFeature);
         if (response.status == 200) {
-          message.success("Feature Code add Successfully");
+          message.success("Feature add Successfully");
         }
-        console.log(response, "resposne");
+        refetch();
         setLoading(false);
         setIsFetureAddModel(false)
       } catch (error) {

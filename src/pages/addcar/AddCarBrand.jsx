@@ -2,7 +2,7 @@ import { Input, Modal, message } from "antd";
 import { useState } from "react";
 import { API } from "../../api/api";
 
-const AddCarBrand = ({ isModalOpen, setIsAddBrandModel}) => {
+const AddCarBrand = ({ isModalOpen, setIsAddBrandModel, refetch}) => {
   const [brandName, setBrandName] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -21,9 +21,9 @@ const AddCarBrand = ({ isModalOpen, setIsAddBrandModel}) => {
         setLoading(true);
         const response = await API.post("/Brand/create", addBrand);
         if (response.status == 200) {
-          message.success("Postal Code add Successfully");
+          message.success("Brand add Successfully");
         }
-        console.log(response, "resposne");
+        refetch()
         setLoading(false);
         setIsAddBrandModel(false);
       } catch (error) {

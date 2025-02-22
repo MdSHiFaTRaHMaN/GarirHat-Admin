@@ -82,7 +82,6 @@ export const useModelByBrand = (brandID) => {
   const getModelByBrand = async () => {
     // const response = await API.get(`/model/all?brand_id=${brandID}`);
     const response = await API.get(`/model?brand_id=${brandID}`);
-    console.log(response)
     return response.data;
   };
   const {
@@ -98,5 +97,25 @@ export const useModelByBrand = (brandID) => {
   return { modelByBrand, isLoading, isError, error, refetch };
 };
   
+
+export const usePriceReason = () => {
+  const getPriceReason = async () => {
+    const response = await API.get("/price-reason/all");
+    return response.data.data;
+  };
+
+  const {
+    data: priceReason = [],
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["PriceReason"],
+    queryFn: getPriceReason,
+  });
+
+  return { priceReason, isLoading, isError, error, refetch };
+};
 
   

@@ -2,7 +2,7 @@ import { Input, Modal, message } from "antd";
 import { useState } from "react";
 import { API } from "../../api/api";
 
-const AddCarModel = ({ isModalOpen, setIsModalOpen, brandID }) => {
+const AddCarModel = ({ isModalOpen, setIsModalOpen, brandID, refetch }) => {
   const [modelName, setModelName] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -13,29 +13,29 @@ const AddCarModel = ({ isModalOpen, setIsModalOpen, brandID }) => {
     }
 
     const addModel = {
-        model_name: modelName,
-        status: "pending",
-        image: "On The Way",
-        brand_id: brandID
-    }
+      model_name: modelName,
+      status: "pending",
+      image: "On The Way",
+      brand_id: brandID,
+    };
 
     console.log(addModel);
 
     setLoading(true);
     try {
-        setLoading(true);
-        const response = await API.post("/model/create", addModel);
-        if (response.status == 200) {
-          message.success("Postal Code add Successfully");
-        }
-        console.log(response, "resposne");
-        setLoading(false);
-        setIsModalOpen(false);
-      } catch (error) {
-        console.error(error);
-        message.error("Something went wrong");
-        setLoading(false);
+      setLoading(true);
+      const response = await API.post("/model/create", addModel);
+      if (response.status == 200) {
+        message.success("Model add Successfully");
       }
+      refetch();
+      setLoading(false);
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error(error);
+      message.error("Something went wrong");
+      setLoading(false);
+    }
   };
 
   const handleCancel = () => {
