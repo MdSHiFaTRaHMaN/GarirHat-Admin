@@ -1,7 +1,6 @@
 import {
   Input,
   Select,
-  Checkbox,
   Button,
   Form,
   Collapse,
@@ -12,7 +11,7 @@ import {
 } from "antd";
 import { CarOutlined, PlusOutlined } from "@ant-design/icons";
 import {
-  useAlFeature,
+  API,
   useAllBrand,
   useAlLocation,
   useModelByBrand,
@@ -21,16 +20,14 @@ import {
 import { useEffect, useState } from "react";
 import AddCarModel from "./AddCarModel";
 import AddCarBrand from "./AddCarBrand";
-import AddFeatureModel from "./AddFeatureModel";
 import { FaMinus } from "react-icons/fa";
 import TextArea from "antd/es/input/TextArea";
 import ReasonPriceModel from "./ReasonPriceModel";
+import AddVehicleFeature from "./AddVehicleFeature";
 
 const { Option } = Select;
 
 const AddMyCar = () => {
-  // search feature
-  const [searchTerm, setSearchTerm] = useState("");
   const [selectedDivision, setSelectedDivision] = useState(null);
   const [selectedDistrict, setSelectedDistrict] = useState(null);
   const [filteredDistricts, setFilteredDistricts] = useState([]);
@@ -38,7 +35,7 @@ const AddMyCar = () => {
   const [brandID, setBrandID] = useState();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAddBrandModel, setIsAddBrandModel] = useState(false);
-  const [isFeatureAddModel, setIsFetureAddModel] = useState(false);
+
   const [reasonPriceField, setReasonPriceField] = useState(false);
   const [color, setColor] = useState([]);
   const [brandName, setBrandName] = useState();
@@ -46,14 +43,14 @@ const AddMyCar = () => {
   const [divitionName, setDivitionName] = useState();
   const [distictName, setDistictName] = useState();
   const [upazilaName, setUpazilaName] = useState();
+  const [loading, setLoading] = useState(false);
+  const [selectedFeatures, setSelectedFeatures] = useState([]);
+
+
 
   const [form] = Form.useForm();
   const { alLocation } = useAlLocation(); //all divition with distict with Upozila
-  const {
-    alFeature,
-    isLoadingFeature,
-    refetch: featureRefetch,
-  } = useAlFeature(); // Car all feature
+
   const { allBrand, refetch: brandRefetch } = useAllBrand(); // Car All Brand
   const {
     modelByBrand,
@@ -106,10 +103,6 @@ const AddMyCar = () => {
     setUpazilaName(option.label);
   };
 
-  // Filtered Features Based on Search Input
-  const filteredFeatures = alFeature.filter((feature) =>
-    feature.feature_name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
   // Thumbnail Image State
   const [thumbnailFile, setThumbnailFile] = useState([]);
 
@@ -124,16 +117,15 @@ const AddMyCar = () => {
     setFileList([...fileList]); // Update state properly
   };
 
+  const handleFeatureSelect = (features) => {
+    setSelectedFeatures(features);
+  };
+
+console.log("selectedFeatures", selectedFeatures)
+
+
   // input all data
-  const onFinish = (values) => {
-    const formData = new FormData();
-
-    formData.append("thumbnail_image", thumbnailFile);
-
-    Object.entries(values).forEach(([key, value]) => {
-      formData.append(key, value);
-    });
-
+  const onFinish = async (values) => {
     const prices = Object.entries(values)
       .filter(([key, value]) =>
         priceReason.some((reason) => reason.name === key)
@@ -143,55 +135,39 @@ const AddMyCar = () => {
         amount: Number(value) || 0,
       }));
 
+    const formData = new FormData();
     formData.append("make", brandName);
     formData.append("model", selectedModelName);
     formData.append("prices", prices);
     formData.append("division", divitionName);
     formData.append("district", distictName);
     formData.append("upzila", upazilaName);
+    formData.append("thumbnail_image", thumbnailFile);
+    formData.append("images", fileList);
+    formData.append("features", JSON.stringify(selectedFeatures));
+    
 
 
-    console.log("features", values);
+    Object.entries(values).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
 
-    // const cardata = {
-    //   make: brandName, //okey
-    //   model: selectedModelName, //okey
-    //   year_of_manufacture: values.year, //okey
-    //   mileage: values.mileage, //okey
-    //   fuel_type: values.fuelType, //okey
-    //   transmission: values.transmission, //okey
-    //   body_type: values.body_Type, //okey
-    //   seating_capacity: values.seating_capacity, //okey
-    //   doors: values.Doors, //okey
-    //   engine_capacity_cc: values.Engine, //okey
-    //   fuel_efficiency_kmpl: values.mpg, //okey
-    //   drive_type: values.drivetrain, //okey
-    //   color: values.exteriorColor, //okey
-    //   interior_color: values.enterior_color, //okey
-    //   description: values.description, //okey
-    //   vehicle_condition: values.condition, // okey
-    //   registration_number: "12345678", //okey
-    //   registration_year: values.registation_year, //okey
-    //   rtn: values.rto, //okey
-    //   power: values.power, //panding
-    //   cabin_size: values.cabin_size,
-    //   trunk_size: values.trunk_size, //okey
-    //   top_speed: "1234", //no needed
-    //   vin_number: values.VIN, //okey
-    //   division: divitionName, //okey
-    //   district: distictName, //okey
-    //   upzila: upazilaName, //okey
-    //   city: "On The Way", //optional
-    //   trim: values.trim, //okey
-    //   discount_price: values.discount_price, //okey
-    //   thumbnail_image: thumbnailFile,
-    //   images: values.images,
-
-    //   features: values.safetyFeatures
-    //     ? values.safetyFeatures.map((feature) => feature)
-    //     : [],
-    // };
-    // console.log("cardata", cardata);
+    try {
+      setLoading(true);
+      const response = await API.post("/vehicle/create", formData);
+      console.log("response", response);
+      if (response.status == 201) {
+        message.success("Car added Successfully");
+        console.log(response);
+      }
+      // refetch();
+      setLoading(false);
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error(error);
+      message.error("Something went wrong");
+      setLoading(false);
+    }
   };
 
   const handleSelectBrand = (value, option) => {
@@ -215,12 +191,10 @@ const AddMyCar = () => {
         layout="vertical"
         onFinish={onFinish}
         onValuesChange={handlePriceChange}
-        initialValues={{ features: [] }}
       >
         <div className="grid lg:grid-cols-2 gap-x-4">
           {/* car make  */}
           <Form.Item
-            name="make"
             rules={[{ required: true, message: "Please Select make" }]}
           >
             <div className="flex items-center justify-between">
@@ -247,7 +221,6 @@ const AddMyCar = () => {
           </Form.Item>
           {/* car model  */}
           <Form.Item
-            name="model"
             rules={[{ required: true, message: "Please Select Model" }]}
           >
             <div className="flex justify-between items-center">
@@ -423,7 +396,7 @@ const AddMyCar = () => {
             </Select>
           </Form.Item>
           {/* Loan Condition  */}
-          <Form.Item label="Loan" name="loan_ondition">
+          <Form.Item label="Loan" name="loan_condition">
             <Select placeholder="Select Loan Condition" className="h-[44px]">
               <Option value="Available">Available</Option>
               <Option value="notAvailable">Not Available</Option>
@@ -437,7 +410,7 @@ const AddMyCar = () => {
             </Select>
           </Form.Item>
           {/* Select Division */}
-          <Form.Item label="Division" name="division">
+          <Form.Item label="Division">
             <Select
               showSearch
               className="h-[44px]"
@@ -451,7 +424,7 @@ const AddMyCar = () => {
             />
           </Form.Item>
           {/* Select District */}
-          <Form.Item label="District" name="district">
+          <Form.Item label="District">
             <Select
               showSearch
               className="h-[44px]"
@@ -466,7 +439,7 @@ const AddMyCar = () => {
             />
           </Form.Item>
           {/* Select Upazila */}
-          <Form.Item label="Upazila" name="upazila">
+          <Form.Item label="Upazila">
             <Select
               showSearch
               className="h-[44px]"
@@ -481,50 +454,12 @@ const AddMyCar = () => {
             />
           </Form.Item>
         </div>
-        {/* Safety Feature  */}
-        <Collapse
-          items={[
-            {
-              key: "1",
-              label: "Safety Features",
-              children: (
-                <Form.Item name="features">
-                  <button
-                    onClick={() => setIsFetureAddModel(true)}
-                    className="text-TextColor bg-gray-100 p-1 rounded font-semibold"
-                  >
-                    + Add Custom Feature
-                  </button>
-                  {/* Search Input */}
-                  <Input
-                    className="my-3 py-[10px]"
-                    placeholder="Search Feature"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
 
-                  {/* Checkbox Group */}
-                  <Checkbox.Group
-                    className="grid grid-cols-4"
-                    onChange={(checkedValues) =>
-                      form.setFieldsValue({ features: checkedValues })
-                    }
-                  >
-                    {isLoadingFeature ? (
-                      <span>Loading</span>
-                    ) : (
-                      filteredFeatures.map((feature) => (
-                        <Checkbox key={feature.id} value={feature.feature_name}>
-                          {feature.feature_name}
-                        </Checkbox>
-                      ))
-                    )}
-                  </Checkbox.Group>
-                </Form.Item>
-              ),
-            },
-          ]}
-        />
+        {/* feature  */}
+        <AddVehicleFeature onFeatureSelect={handleFeatureSelect} />
+
+    
+
         {/* measurements  */}
         <Collapse
           className="my-5"
@@ -580,7 +515,7 @@ const AddMyCar = () => {
           items={[
             {
               key: "1",
-              label: "Price Calculate",
+              label: "Cost Calculator",
               children: (
                 <div className="gap-x-4">
                   {/* Add Price  */}
@@ -656,7 +591,7 @@ const AddMyCar = () => {
         {/* Thumbnail Image */}
         <span className="text-xl font-semibold">Thumbnail Image</span>
         <Upload
-          name="thumbnail_image"
+          // name="thumbnail_image"
           listType="picture-card"
           className="avatar-uploader mt-4"
           action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
@@ -683,7 +618,7 @@ const AddMyCar = () => {
 
         {/* Multiple Images Upload */}
         <Upload
-          name="images"
+          // name="images"
           listType="picture-card"
           className="avatar-uploader mt-4"
           action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
@@ -707,6 +642,8 @@ const AddMyCar = () => {
         </Upload>
         <Form.Item>
           <Button
+            disabled={loading}
+            loading={loading}
             htmlType="submit"
             className="w-full mt-5 bg-ButtonColor hover:!bg-ButtonHover hover:!text-white font-semibold text-white py-5"
           >
@@ -714,6 +651,7 @@ const AddMyCar = () => {
           </Button>
         </Form.Item>
       </Form>
+      {/* added modal components  */}
       <AddCarModel
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
@@ -725,11 +663,7 @@ const AddMyCar = () => {
         setIsAddBrandModel={setIsAddBrandModel}
         refetch={brandRefetch}
       />
-      <AddFeatureModel
-        isModalOpen={isFeatureAddModel}
-        setIsFetureAddModel={setIsFetureAddModel}
-        refetch={featureRefetch}
-      />
+
       <ReasonPriceModel
         isModalOpen={reasonPriceField}
         setReasonPriceField={setReasonPriceField}
