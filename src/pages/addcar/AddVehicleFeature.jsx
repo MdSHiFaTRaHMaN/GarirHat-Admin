@@ -3,7 +3,7 @@ import { useAlFeature } from "../../api/api";
 import AddFeatureModel from "./AddFeatureModel";
 import { useState } from "react";
 
-const AddVehicleFeature = ({onFeatureSelect}) => {
+const AddVehicleFeature = ({ onFeatureSelect }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isFeatureAddModel, setIsFetureAddModel] = useState(false);
   const [selectFeature, setSelectFeature] = useState([]);
@@ -22,10 +22,14 @@ const AddVehicleFeature = ({onFeatureSelect}) => {
   );
 
   const handleFeatureChange = (checkedValues) => {
-    setSelectFeature(checkedValues); 
-    form.setFieldsValue({ features: checkedValues }); 
-    onFeatureSelect(checkedValues);
-  }
+    const formattedFeatures = checkedValues.map((feature) => ({
+      name: feature,
+    }));
+
+    setSelectFeature(checkedValues);
+    form.setFieldsValue({ features: checkedValues });
+    onFeatureSelect(formattedFeatures);
+  };
 
   return (
     <div>
@@ -53,7 +57,7 @@ const AddVehicleFeature = ({onFeatureSelect}) => {
                 {/* Checkbox Group */}
                 <Checkbox.Group
                   className="grid grid-cols-4"
-                  value={selectFeature} 
+                  value={selectFeature}
                   onChange={handleFeatureChange}
                 >
                   {isLoadingFeature ? (

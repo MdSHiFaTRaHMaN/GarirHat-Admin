@@ -4,26 +4,23 @@ import {
   Button,
   Form,
   Collapse,
-  Upload,
   message,
-  Card,
   DatePicker,
 } from "antd";
-import { CarOutlined, PlusOutlined } from "@ant-design/icons";
+import { CarOutlined } from "@ant-design/icons";
 import {
   API,
   useAllBrand,
   useAlLocation,
   useModelByBrand,
-  usePriceReason,
 } from "../../api/api";
 import { useEffect, useState } from "react";
 import AddCarModel from "./AddCarModel";
 import AddCarBrand from "./AddCarBrand";
-import { FaMinus } from "react-icons/fa";
 import TextArea from "antd/es/input/TextArea";
-import ReasonPriceModel from "./ReasonPriceModel";
 import AddVehicleFeature from "./AddVehicleFeature";
+import VehiclePricing from "./VehiclePricing";
+import VehicleImages from "./VehicleImages";
 
 const { Option } = Select;
 
@@ -36,7 +33,6 @@ const AddMyCar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAddBrandModel, setIsAddBrandModel] = useState(false);
 
-  const [reasonPriceField, setReasonPriceField] = useState(false);
   const [color, setColor] = useState([]);
   const [brandName, setBrandName] = useState();
   const [selectedModelName, setSelectedModelName] = useState();
@@ -45,8 +41,9 @@ const AddMyCar = () => {
   const [upazilaName, setUpazilaName] = useState();
   const [loading, setLoading] = useState(false);
   const [selectedFeatures, setSelectedFeatures] = useState([]);
-
-
+  const [prices, setPrices] = useState([]);
+  const [thumbnailImage, setThumbnailImage] = useState(null);
+  const [images, setImages] = useState([]);
 
   const [form] = Form.useForm();
   const { alLocation } = useAlLocation(); //all divition with distict with Upozila
@@ -57,7 +54,6 @@ const AddMyCar = () => {
     isLoading,
     refetch: modelRefetch,
   } = useModelByBrand(brandID);
-  const { priceReason, refetch: priceRefetch } = usePriceReason();
 
   //  add custom model open
   const showModal = () => {
@@ -71,16 +67,6 @@ const AddMyCar = () => {
       .catch((error) => console.error("Error fetching Color:", error));
   }, []);
 
-  const [totalPrice, setTotalPrice] = useState(0);
-
-  const handlePriceChange = (_, allValues) => {
-    // Extract all reasonPrice values and sum them up
-    const total = priceReason.reduce((sum, reason) => {
-      const value = Number(allValues[reason.name]) || 0; // Ensure it's a number
-      return sum + value;
-    }, 0);
-    setTotalPrice(total);
-  };
   // Handle Division Change
   const handleDivisionChange = (value, option) => {
     setSelectedDivision(value);
@@ -103,63 +89,56 @@ const AddMyCar = () => {
     setUpazilaName(option.label);
   };
 
-  // Thumbnail Image State
-  const [thumbnailFile, setThumbnailFile] = useState([]);
-
-  const handleThumbnailImage = ({ fileList }) => {
-    setThumbnailFile([...fileList]); // Ensure it's an array
-  };
-
-  // Multiple Image Upload State
-  const [fileList, setFileList] = useState([]);
-
-  const handleChange = ({ fileList }) => {
-    setFileList([...fileList]); // Update state properly
-  };
-
   const handleFeatureSelect = (features) => {
     setSelectedFeatures(features);
   };
 
-console.log("selectedFeatures", selectedFeatures)
+  const handlePrices = (pricing) => {
+    setPrices(pricing);
+  };
 
+  const handleThumbnailImage = (file) => {
+    setThumbnailImage(file);
+  };
+
+  const handleImages = (files) => {
+    setImages(files);
+  };
 
   // input all data
   const onFinish = async (values) => {
-    const prices = Object.entries(values)
-      .filter(([key, value]) =>
-        priceReason.some((reason) => reason.name === key)
-      )
-      .map(([key, value]) => ({
-        reason: key,
-        amount: Number(value) || 0,
-      }));
-
     const formData = new FormData();
     formData.append("make", brandName);
     formData.append("model", selectedModelName);
-    formData.append("prices", prices);
     formData.append("division", divitionName);
     formData.append("district", distictName);
     formData.append("upzila", upazilaName);
-    formData.append("thumbnail_image", thumbnailFile);
-    formData.append("images", fileList);
-    formData.append("features", JSON.stringify(selectedFeatures));
-    
 
+    if (thumbnailImage) {
+      formData.append("thumbnail_image", thumbnailImage);
+    }
+
+    images.forEach((image) => {
+      formData.append("images", image);
+    });
+
+    formData.append("prices", JSON.stringify(prices));
+    formData.append("features", JSON.stringify(selectedFeatures));
 
     Object.entries(values).forEach(([key, value]) => {
-      formData.append(key, value);
+      if (value !== undefined && value !== null) {
+        formData.append(key, value);
+      }
     });
 
     try {
       setLoading(true);
       const response = await API.post("/vehicle/create", formData);
-      console.log("response", response);
       if (response.status == 201) {
         message.success("Car added Successfully");
-        console.log(response);
       }
+
+      console.log("response", response);
       // refetch();
       setLoading(false);
       setIsModalOpen(false);
@@ -176,7 +155,7 @@ console.log("selectedFeatures", selectedFeatures)
     form.setFieldsValue({ make: value });
   };
   const handleSelectModel = (value, option) => {
-    setSelectedModelName(option.label); // Model Name সংরক্ষণ
+    setSelectedModelName(option.label);
     form.setFieldsValue({ model: value });
   };
 
@@ -186,12 +165,7 @@ console.log("selectedFeatures", selectedFeatures)
         <CarOutlined />
         Sell your car from home for the best price
       </h2>
-      <Form
-        form={form}
-        layout="vertical"
-        onFinish={onFinish}
-        onValuesChange={handlePriceChange}
-      >
+      <Form form={form} layout="vertical" onFinish={onFinish}>
         <div className="grid lg:grid-cols-2 gap-x-4">
           {/* car make  */}
           <Form.Item
@@ -458,8 +432,6 @@ console.log("selectedFeatures", selectedFeatures)
         {/* feature  */}
         <AddVehicleFeature onFeatureSelect={handleFeatureSelect} />
 
-    
-
         {/* measurements  */}
         <Collapse
           className="my-5"
@@ -509,70 +481,15 @@ console.log("selectedFeatures", selectedFeatures)
             },
           ]}
         />
+
         {/* Price Calculate  */}
-        <Collapse
-          className="my-5"
-          items={[
-            {
-              key: "1",
-              label: "Cost Calculator",
-              children: (
-                <div className="gap-x-4">
-                  {/* Add Price  */}
-                  <div className="grid grid-cols-2 gap-x-4">
-                    {priceReason.map((reason, index) => (
-                      <Form.Item
-                        key={index}
-                        label={reason.name}
-                        name={reason.name}
-                        className="mt-3"
-                      >
-                        <Input
-                          placeholder={`Enter ${reason.name}`}
-                          className="py-[10px]"
-                        />
-                      </Form.Item>
-                    ))}
-                  </div>
-                  <Button
-                    onClick={() => setReasonPriceField(true)}
-                    className="bg-ButtonColor hover:!bg-ButtonHover !text-white my-2"
-                  >
-                    + Add Price
-                  </Button>
-                  <div className="grid grid-cols-2 gap-x-4">
-                    <div className="rounded bg-white border border-gray-200">
-                      <h1 className="text-2xl font-MyStyle text-center mt-12">
-                        Total Car Price With Cost:{" "}
-                        <span className="font-semibold">
-                          {totalPrice.toLocaleString()} Taka
-                        </span>
-                      </h1>
-                    </div>
-                    <Card className="rounded bg-white border border-gray-200">
-                      <h2 className="text-xl text-center font-semibold text-gray-800">
-                        Recommendation Price
-                      </h2>
-                      <div className="flex justify-center items-center gap-2">
-                        <p className="text-xl font-bold text-TextColor mt-2">
-                          ৳25,50,000
-                        </p>
-                        <FaMinus className="mt-3" />
-                        <p className="text-xl font-bold text-TextColor mt-2">
-                          ৳26,50,000
-                        </p>
-                      </div>
-                    </Card>
-                  </div>
-                </div>
-              ),
-            },
-          ]}
-        />
+        <VehiclePricing onPrices={handlePrices} />
+
         {/* Selling price  */}
         {/* <Form.Item label="Selling Price" name="selling-price" className="mt-3">
           <Input placeholder="Enter Selling Price" className="py-[10px]" />
         </Form.Item> */}
+
         {/* Discount price price  */}
         <Form.Item
           label="Discount Price"
@@ -581,6 +498,7 @@ console.log("selectedFeatures", selectedFeatures)
         >
           <Input placeholder="Enter Discount Price" className="py-[10px]" />
         </Form.Item>
+
         {/* Type Description  */}
         <Form.Item
           name="description"
@@ -588,58 +506,12 @@ console.log("selectedFeatures", selectedFeatures)
         >
           <TextArea rows={4} placeholder="Please type Short Description....." />
         </Form.Item>
-        {/* Thumbnail Image */}
-        <span className="text-xl font-semibold">Thumbnail Image</span>
-        <Upload
-          // name="thumbnail_image"
-          listType="picture-card"
-          className="avatar-uploader mt-4"
-          action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-          beforeUpload={(file) => {
-            const isImage = file.type.startsWith("image/");
-            if (!isImage) {
-              message.error("You can only upload image files!");
-            }
-            return isImage;
-          }}
-          multiple={false} // Single file only
-          fileList={thumbnailFile}
-          onChange={handleThumbnailImage}
-        >
-          {thumbnailFile.length < 1 && ( // Show button only if no file is uploaded
-            <div>
-              <PlusOutlined />
-              <div style={{ marginTop: 8 }}>Upload</div>
-            </div>
-          )}
-        </Upload>
 
-        <span className="text-xl font-semibold">Update Image</span>
+        <VehicleImages
+          onThumbnailImageChange={handleThumbnailImage}
+          onImagesChange={handleImages}
+        />
 
-        {/* Multiple Images Upload */}
-        <Upload
-          // name="images"
-          listType="picture-card"
-          className="avatar-uploader mt-4"
-          action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-          beforeUpload={(file) => {
-            const isImage = file.type.startsWith("image/");
-            if (!isImage) {
-              message.error("You can only upload image files!");
-            }
-            return isImage;
-          }}
-          multiple={true} // Allow multiple images
-          fileList={fileList}
-          onChange={handleChange}
-        >
-          {fileList.length < 5 && ( // Limit to 5 images
-            <div>
-              <PlusOutlined />
-              <div style={{ marginTop: 8 }}>Upload</div>
-            </div>
-          )}
-        </Upload>
         <Form.Item>
           <Button
             disabled={loading}
@@ -662,12 +534,6 @@ console.log("selectedFeatures", selectedFeatures)
         isModalOpen={isAddBrandModel}
         setIsAddBrandModel={setIsAddBrandModel}
         refetch={brandRefetch}
-      />
-
-      <ReasonPriceModel
-        isModalOpen={reasonPriceField}
-        setReasonPriceField={setReasonPriceField}
-        refetch={priceRefetch}
       />
     </div>
   );
