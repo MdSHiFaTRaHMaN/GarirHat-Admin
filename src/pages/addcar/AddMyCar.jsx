@@ -131,8 +131,6 @@ const AddMyCar = () => {
       }
     });
 
-    console.log(values);
-
     try {
       setLoading(true);
       const response = await API.post("/vehicle/create", formData);
@@ -351,7 +349,7 @@ const AddMyCar = () => {
             </Select>
           </Form.Item>
           {/* body Type */}
-          <Form.Item label="Body Type" name="body_type">
+          <Form.Item label="Body Type" name="body_Type">
             <Select placeholder="Select Body Type" className="h-[44px]">
               <Option value="Hantchback">Hantchback</Option>
               <Option value="SUV">SUV</Option>
