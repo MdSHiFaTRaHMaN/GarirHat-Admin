@@ -4,9 +4,9 @@ import Main from "../layout/Main";
 import DashBoard from "../pages/homepage/DashBoard";
 import AddMyCar from "../pages/addcar/AddMyCar";
 import UserMessage from "../pages/usermessage/UserMessage";
-import UserProfile from "../pages/UserProfile";
 import MyCarList from "../pages/mycarlist/MyCarList";
 import CarDetails from "../pages/cardetailspage/CarDetails";
+import UserProfile from "../pages/UserProfilePage.jsx/UserProfile";
 
 export const routes = createBrowserRouter([
   {
