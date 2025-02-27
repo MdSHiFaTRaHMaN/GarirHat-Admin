@@ -23,7 +23,7 @@ const AddVehicleFeature = ({ onFeatureSelect }) => {
 
   const handleFeatureChange = (checkedValues) => {
     const formattedFeatures = checkedValues.map((feature) => ({
-      name: feature,
+      id: feature,
     }));
 
     setSelectFeature(checkedValues);
@@ -31,13 +31,14 @@ const AddVehicleFeature = ({ onFeatureSelect }) => {
     onFeatureSelect(formattedFeatures);
   };
 
+
   return (
     <div>
       <Collapse
         items={[
           {
             key: "1",
-            label: "Safety Features",
+            label: "Features",
             children: (
               <Form.Item name="features">
                 <button
@@ -64,7 +65,7 @@ const AddVehicleFeature = ({ onFeatureSelect }) => {
                     <span>Loading</span>
                   ) : (
                     filteredFeatures.map((feature) => (
-                      <Checkbox key={feature.id} value={feature.feature_name}>
+                      <Checkbox key={feature.id} value={feature.id}>
                         {feature.feature_name}
                       </Checkbox>
                     ))

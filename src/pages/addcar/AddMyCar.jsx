@@ -336,7 +336,7 @@ const AddMyCar = () => {
             <Input placeholder="Enter RTO" className="py-[10px]" />
           </Form.Item>
           {/* fuelType */}
-          <Form.Item label="Fuel Type" name="fuel_type">
+          <Form.Item label="Fuel/Vehicle Type" name="fuel_type">
             <Select placeholder="Select Fuel Type" className="h-[44px]">
               <Option value="Petrol">Petrol</Option>
               <Option value="Diesel">Diesel</Option>
@@ -367,6 +367,7 @@ const AddMyCar = () => {
               <Option value="Pre-own">Pre-Own</Option>
               <Option value="Recondition">Recondition</Option>
               <Option value="Sell By Owner">Sell By Owner</Option>
+              <Option value="Upcoming Car">Upcoming Car</Option>
             </Select>
           </Form.Item>
           {/* Loan Condition  */}

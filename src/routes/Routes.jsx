@@ -7,6 +7,7 @@ import UserMessage from "../pages/usermessage/UserMessage";
 import MyCarList from "../pages/mycarlist/MyCarList";
 import CarDetails from "../pages/cardetailspage/CarDetails";
 import UserProfile from "../pages/UserProfilePage.jsx/UserProfile";
+import Practic from "../Practic";
 
 export const routes = createBrowserRouter([
   {
@@ -40,6 +41,10 @@ export const routes = createBrowserRouter([
       {
         path: "/car-details",
         element: <CarDetails />,
+      },
+      {
+        path: "/test",
+        element: <Practic />,
       },
     ],
   },
