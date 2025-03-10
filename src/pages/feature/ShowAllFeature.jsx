@@ -1,27 +1,39 @@
 import React, { useState } from "react";
 import { API, useAlFeature } from "../../api/api";
 import { DeleteOutlined } from "@ant-design/icons";
-import { message, Spin } from "antd";
+import { message, Modal, Spin } from "antd";
 
 const ShowAllFeature = () => {
   const { alFeature, isLoading, refetch } = useAlFeature();
   const [loading, setLoading] = useState(false);
 
   const handleFeatureDelete = async (id) => {
-    try {
-      setLoading(true);
-      const response = await API.delete(`/feature/delete/${id}`);
-      console.log("responsive", response);
-      if (response.status === 200) {
-        message.success("Model Deleted Successfully");
-        refetch();
-      }
-    } catch (error) {
-      message.error("Failed to delete model");
-      console.log("Error:", error);
-    } finally {
-      setLoading(false);
-    }
+    Modal.confirm({
+      title: "Are you sure you want to delete this Vehicle Feature?",
+      content: "This action cannot be undone.",
+      okText: "Yes, Delete",
+      cancelText: "Cancel",
+      okType: "danger",
+      onOk: async () => {
+        try {
+          setLoading(true);
+          const response = await API.delete(`/feature/delete/${id}`);
+          console.log("responsive", response);
+          if (response.status === 200) {
+            message.success("Model Deleted Successfully");
+            refetch();
+          }
+        } catch (error) {
+          message.error("Failed to delete model");
+          console.log("Error:", error);
+        } finally {
+          setLoading(false);
+        }
+      },
+      onCancel() {
+        console.log("Deletion cancelled.");
+      },
+    });
   };
 
   // Show loader while fetching data
@@ -41,7 +53,7 @@ const ShowAllFeature = () => {
             <li>{feature.feature_name}</li>
             <button
               onClick={() => handleFeatureDelete(feature.id)}
-              disabled={loading} 
+              disabled={loading}
               className="text-red-600"
             >
               <DeleteOutlined />

@@ -1,5 +1,5 @@
 import { DeleteOutlined } from "@ant-design/icons";
-import { Collapse, message, Spin } from "antd";
+import { Collapse, message, Modal, Spin } from "antd";
 import React, { useState } from "react";
 import { API, useBrandWithModel } from "../../api/api";
 
@@ -8,20 +8,32 @@ const ShowAllModel = () => {
   const [loading, setLoading] = useState(false);
 
   const handleModelDelete = async (id) => {
-    try {
-      setLoading(true);
-      const response = await API.delete(`/model/delete/${id}`);
-      console.log("responsive", response)
-      if (response.status === 200) {
-        message.success("Model Deleted Successfully");
-        refetch(); 
-      }
-    } catch (error) {
-      message.error("Failed to delete model");
-      console.log("Error:", error);
-    } finally {
-      setLoading(false);
-    }
+    Modal.confirm({
+      title: "Are you sure you want to delete this Vehicle Model?",
+      content: "This action cannot be undone.",
+      okText: "Yes, Delete",
+      cancelText: "Cancel",
+      okType: "danger",
+      onOk: async () => {
+        try {
+          setLoading(true);
+          const response = await API.delete(`/model/delete/${id}`);
+          console.log("responsive", response);
+          if (response.status === 200) {
+            message.success("Model Deleted Successfully");
+            refetch();
+          }
+        } catch (error) {
+          message.error("Failed to delete model");
+          console.log("Error:", error);
+        } finally {
+          setLoading(false);
+        }
+      },
+      onCancel() {
+        console.log("Deletion cancelled.");
+      },
+    });
   };
 
   // Show loader while fetching data
