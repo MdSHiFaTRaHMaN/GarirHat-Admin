@@ -1,8 +1,15 @@
 import React from "react";
-import { Card } from "antd";
-import { UserOutlined, BoxOutlined } from "@ant-design/icons";
+import { Card, Progress } from "antd";
+import { UserOutlined, BoxPlotOutlined } from "@ant-design/icons";
 import { AiOutlineArrowUp, AiOutlineArrowDown } from "react-icons/ai";
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip } from "recharts";
+import {
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+} from "recharts";
 
 const data = [
   { month: "Jan", sales: 100 },
@@ -21,72 +28,71 @@ const data = [
 
 const Dashboard = () => {
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Customers Card */}
-        <Card className="p-4 shadow-md">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2">
-              <UserOutlined className="text-2xl bg-gray-200 p-2 rounded-full" />
-              <div>
-                <p className="text-gray-500">Customers</p>
-                <h2 className="text-2xl font-bold">3,782</h2>
+    <div className="flex">
+      <div className="w-4/6">
+        <div className="flex gap-6 w-full">
+          {/* Customers Card */}
+          <Card className="p-6 rounded-lg border-l-4 border-blue-500">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-3">
+                <UserOutlined className="text-4xl bg-blue-100 p-3 rounded-full text-blue-600" />
+                <div>
+                  <p className="text-gray-500">Customers</p>
+                  <h2 className="text-3xl font-bold">3,782</h2>
+                </div>
               </div>
+              <span className="text-green-500 flex items-center text-lg">
+                <AiOutlineArrowUp /> 11.01%
+              </span>
             </div>
-            <span className="text-green-500 flex items-center">
-              <AiOutlineArrowUp /> 11.01%
-            </span>
-          </div>
-        </Card>
-
-        {/* Orders Card */}
-        <Card className="p-4 shadow-md">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2">
-              <BoxOutlined className="text-2xl bg-gray-200 p-2 rounded-full" />
-              <div>
-                <p className="text-gray-500">Orders</p>
-                <h2 className="text-2xl font-bold">5,359</h2>
+          </Card>
+          {/* Orders Card */}
+          <Card className="p-6 rounded-lg border-l-4 border-red-500">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-3">
+                <BoxPlotOutlined className="text-4xl bg-red-100 p-3 rounded-full text-red-600" />
+                <div>
+                  <p className="text-gray-500">Orders</p>
+                  <h2 className="text-3xl font-bold">5,359</h2>
+                </div>
               </div>
+              <span className="text-red-500 flex items-center text-lg">
+                <AiOutlineArrowDown /> 9.05%
+              </span>
             </div>
-            <span className="text-red-500 flex items-center">
-              <AiOutlineArrowDown /> 9.05%
-            </span>
-          </div>
-        </Card>
-      </div>
+          </Card>
+        </div>
 
-      {/* Monthly Sales Chart */}
-      <div className="mt-6">
-        <Card className="p-4 shadow-md">
-          <h3 className="text-lg font-semibold mb-4">Monthly Sales</h3>
-          <ResponsiveContainer width="100%" height={250}>
-            <BarChart data={data}>
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="sales" fill="#2563EB" radius={[5, 5, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </Card>
+        {/* Monthly Sales Chart */}
+        <div className="mt-6">
+          <Card className="p-4">
+            <h3 className="text-lg font-semibold mb-4">Monthly Sales</h3>
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={data}>
+                <XAxis dataKey="month" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="sales" fill="#2563EB" radius={[5, 5, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </Card>
+        </div>
       </div>
 
       {/* Monthly Target */}
-      <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card className="p-4 shadow-md">
+      <div className="mt-2 grid grid-cols-1 w-2/6">
+      <Card className="p-6 shadow-lg rounded-lg">
           <h3 className="text-lg font-semibold">Monthly Target</h3>
-          <p className="text-gray-500">Target you’ve set for each month</p>
-          <div className="relative w-40 h-40 mx-auto mt-4">
-            <div className="w-full h-full rounded-full bg-gray-200 absolute"></div>
-            <div className="w-full h-full rounded-full bg-blue-500 absolute" style={{ clipPath: "polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)" }}></div>
-            <div className="absolute inset-0 flex items-center justify-center text-2xl font-bold">75.55%</div>
+          <p className="text-gray-500">Your progress towards the monthly goal</p>
+          <div className="flex justify-center mt-6">
+            <Progress type="circle" percent={75.55} strokeColor="#2563EB" format={(percent) => `${percent}%`} />
           </div>
-          <p className="text-green-500 mt-2 text-center">+10%</p>
-          <p className="text-gray-500 text-center mt-2">You earned $3287 today, higher than last month.</p>
+          <p className="text-green-500 mt-4 text-center">+10%</p>
+          <p className="text-gray-500 text-center mt-2">You earned $3,287 today, higher than last month.</p>
         </Card>
 
         {/* Target, Revenue, Today */}
-        <Card className="p-4 shadow-md">
+        <Card className="p-4">
           <div className="grid grid-cols-3 text-center">
             <div>
               <p className="text-gray-500">Target</p>
