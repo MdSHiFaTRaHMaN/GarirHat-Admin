@@ -15,6 +15,7 @@ import Test from "../pages/Test";
 import ModelRequest from "../pages/model/ModelRequest";
 import RequestVehicleFeature from "../pages/feature/RequestVehicleFeature";
 import VendorDetails from "../pages/vendor/VendorDetails";
+import ShowAllDivition from "../pages/location/ShowAllDivition";
 
 export const routes = createBrowserRouter([
   {
@@ -68,6 +69,10 @@ export const routes = createBrowserRouter([
       {
         path: "/user-list",
         element: <UserList />
+      },
+      {
+        path: "/divition-bd",
+        element: <ShowAllDivition />
       },
       {
         path: "/:settings",

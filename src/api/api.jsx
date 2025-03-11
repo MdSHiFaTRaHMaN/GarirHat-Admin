@@ -40,6 +40,7 @@ export const useMyVehicles = ({
 
   return { myVehicles, pagination, isLoading, isError, error, refetch };
 };
+
 // AlFeature list
 export const useAlFeature = () => {
   const getAlFeature = async () => {
@@ -60,6 +61,7 @@ export const useAlFeature = () => {
 
   return { alFeature, isLoadingFeature, isError, error, refetch };
 };
+
 export const useRequestFeature = () => {
   const getRequestFeature = async () => {
     const response = await API.get("/feature");
@@ -120,6 +122,7 @@ export const useBrandWithModel = () => {
 
   return { brandWithModel, isLoading, isError, error, refetch };
 };
+
 //   all vendor
 export const useAllVendor = () => {
   const getAllVendor = async () => {
@@ -140,6 +143,7 @@ export const useAllVendor = () => {
 
   return { allVendor, isLoading, isError, error, refetch };
 };
+
 //   single vendor
 export const useSingleVendor = (vendorId) => {
   const getSingleVendor = async () => {
@@ -160,6 +164,7 @@ export const useSingleVendor = (vendorId) => {
 
   return { singleVendor, isLoading, isError, error, refetch };
 };
+
 //   all user
 export const useAllUser = () => {
   const getAllUser = async () => {
@@ -180,6 +185,7 @@ export const useAllUser = () => {
 
   return { allUser, isLoading, isError, error, refetch };
 };
+
 // get Settings
 export const useSettings = (settingName) => {
     const getSettings = async () => {
@@ -200,6 +206,7 @@ export const useSettings = (settingName) => {
   
     return { settings, isLoading, isError, error, refetch };
   };
+
 //   get Single vehicle 
 export const useVehicleDetails = (vehicleID) => {
     const getVehicleDetails = async () => {
@@ -220,5 +227,27 @@ export const useVehicleDetails = (vehicleID) => {
     });
   
     return { vehicleDetails, isLoading, isError, error, refetch };
+  };
+  
+//   get all divition
+export const useAllDivition = () => {
+    const getAllDivition = async () => {
+      const response = await API.get(`/location/division`);
+      console.log("response", response)
+      return response.data.data;
+    };
+  
+    const {
+      data: allDivition = [],
+      isLoading,
+      isError,
+      error,
+      refetch,
+    } = useQuery({
+      queryKey: ["allDivition"],
+      queryFn: getAllDivition,
+    });
+  
+    return { allDivition, isLoading, isError, error, refetch };
   };
   

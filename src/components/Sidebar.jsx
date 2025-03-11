@@ -98,6 +98,15 @@ const sidebarItems = [
     ),
   },
   {
+    key: "10",
+    icon: <FaPeopleGroup />,
+    label: (
+      <Link to="/divition-bd">
+        <span className="font-semibold">Location</span>
+      </Link>
+    ),
+  },
+  {
     key: "8",
     icon: <SettingOutlined />,
     label: <span className="font-semibold">Setting</span>,
