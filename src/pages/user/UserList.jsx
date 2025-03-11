@@ -1,10 +1,11 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Button, Space, Table, Tag } from "antd";
-import React from "react";
-import { useAllUser } from "../../api/api";
+import { Button, message, Select, Space, Table, Tag } from "antd";
+import React, { useState } from "react";
+import { API, useAllUser } from "../../api/api";
 
 const UserList = () => {
   const { allUser, isLoading, refetch } = useAllUser();
+ const [statusLoading, setStatusLoading]= useState(false);
 
   // Data Processing
   const data = allUser?.map((user) => ({
@@ -44,10 +45,29 @@ const UserList = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (status) => (
-        <Tag color={status === "active" ? "green" : "volcano"}>
-          {status.toUpperCase() || "Deactive"}
-        </Tag>
+      render: (status, record) => (
+        <Select
+          defaultValue={status || "Select Status"}
+          disabled={statusLoading}
+          style={{
+            width: 120,
+          }}
+          options={[
+            {
+              value: "Active",
+              label: "Active",
+            },
+            {
+              value: "Inactive",
+              label: "Inactive",
+            },
+            {
+              value: "Blocked",
+              label: "Blocked",
+            },
+          ]}
+          onChange={(value, key) => handleChange(value, record.key)}
+        />
       ),
     },
     {
@@ -62,6 +82,28 @@ const UserList = () => {
       ),
     },
   ];
+
+  const handleChange = async (value, key) => {
+    setStatusLoading(true);
+    const data = { status : value }
+    try {
+      // API Call
+      const response = await API.put(`/user/status/${key}`, data);
+      
+      if (response.status === 200) {
+        message.success("Status Updated Successfully");
+        setStatusLoading(false);
+        refetch();
+      } else {
+        message.error("Update failed");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      message.error("Something went wrong");
+    } finally {
+      setStatusLoading(false);
+    }
+  };
 
   return (
     <div>

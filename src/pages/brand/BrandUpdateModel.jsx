@@ -3,7 +3,7 @@ import { Button, Modal, Form, Input, Upload, message } from "antd";
 import { useState } from "react";
 import { API } from "../../api/api";
 
-const BrandAddModel = ({ refetch }) => {
+const BrandUpdateModel = ({ brand, brandId, refetch }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
@@ -25,7 +25,6 @@ const BrandAddModel = ({ refetch }) => {
       // Create FormData object
       const formData = new FormData();
       formData.append("brand_name", values.brand_name);
-      formData.append("status", "active");
       // If a new image is uploaded, append it to FormData
       if (profileFile.length > 0) {
         formData.append("image", profileFile[0].originFileObj);
@@ -34,7 +33,7 @@ const BrandAddModel = ({ refetch }) => {
       setLoading(true);
 
       // API Call
-      const response = await API.post(`/brand/create`, formData, {
+      const response = await API.put(`/brand/update/${brandId}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -57,7 +56,7 @@ const BrandAddModel = ({ refetch }) => {
   return (
     <div>
       <Button type="primary" onClick={showModal}>
-        + Add Brand
+        <EditOutlined />
       </Button>
       <Modal
         title="Update Profile"
@@ -70,6 +69,12 @@ const BrandAddModel = ({ refetch }) => {
           form={form}
           layout="vertical"
           name="edit-profile"
+            initialValues={{
+                brand_name: brand.brand_name,
+                image: brand.image
+                ? [{ url: brand.image }]
+                : [],
+            }}
         >
           <Form.Item
             label="brand_name"
@@ -116,4 +121,4 @@ const BrandAddModel = ({ refetch }) => {
   );
 };
 
-export default BrandAddModel;
+export default BrandUpdateModel;

@@ -60,6 +60,25 @@ export const useAlFeature = () => {
 
   return { alFeature, isLoadingFeature, isError, error, refetch };
 };
+export const useRequestFeature = () => {
+  const getRequestFeature = async () => {
+    const response = await API.get("/feature");
+    return response.data.data;
+  };
+
+  const {
+    data: requestFeature = [],
+    isLoadingFeature,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["requestFeature"],
+    queryFn: getRequestFeature,
+  });
+
+  return { requestFeature, isLoadingFeature, isError, error, refetch };
+};
 // all brand list
 export const useAllBrand = () => {
   const getAllBrand = async () => {
@@ -81,7 +100,7 @@ export const useAllBrand = () => {
   return { allBrand, isLoading, isError, error, refetch };
 };
 
-//  Price reason
+//  Brand with model
 export const useBrandWithModel = () => {
   const getBrandWithModel = async () => {
     const response = await API.get("/brand/with-model");
@@ -101,7 +120,7 @@ export const useBrandWithModel = () => {
 
   return { brandWithModel, isLoading, isError, error, refetch };
 };
-//  Price reason
+//   all vendor
 export const useAllVendor = () => {
   const getAllVendor = async () => {
     const response = await API.get("/vendor/all");
@@ -121,7 +140,27 @@ export const useAllVendor = () => {
 
   return { allVendor, isLoading, isError, error, refetch };
 };
-//  Price reason
+//   single vendor
+export const useSingleVendor = (vendorId) => {
+  const getSingleVendor = async () => {
+    const response = await API.get(`/vendor/${vendorId}`);
+    return response.data.data;
+  };
+
+  const {
+    data: singleVendor = [],
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["singleVendor", vendorId],
+    queryFn: getSingleVendor,
+  });
+
+  return { singleVendor, isLoading, isError, error, refetch };
+};
+//   all user
 export const useAllUser = () => {
   const getAllUser = async () => {
     const response = await API.get("/user/all");

@@ -1,12 +1,15 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Button, message, Modal, Space, Table, Tag } from "antd";
+import { Button, Input, message, Modal, Select, Space, Table, Tag } from "antd";
 import React, { useState } from "react";
 import { API, useAllBrand } from "../../api/api";
 import BrandAddModel from "./BrandAddModel";
+import BrandUpdateModel from "./BrandUpdateModel";
+const { Search } = Input;
 
 const ShowAllBrand = () => {
   const { allBrand, isLoading, refetch } = useAllBrand();
   const [loading, setLoading] = useState(false);
+  const [statusLoading, setStatusLoading] = useState(false);
   // Data Processing
   const data = allBrand?.map((brand) => ({
     key: brand.id,
@@ -14,6 +17,16 @@ const ShowAllBrand = () => {
     brand_name: brand.brand_name,
     status: brand.status,
   }));
+
+  const [searchText, setSearchText] = useState("");
+
+const filteredData = data?.filter((brand) =>
+  brand.brand_name.toLowerCase().includes(searchText.toLowerCase())
+);
+
+const onSearch = (value) => {
+  setSearchText(value);
+};
 
   const handleBrandDelete = async (id) => {
     Modal.confirm({
@@ -63,10 +76,25 @@ const ShowAllBrand = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (status) => (
-        <Tag color={status === "active" ? "green" : "volcano"}>
-          {status.toUpperCase()}
-        </Tag>
+      render: (status, record) => (
+        <Select
+          defaultValue={status}
+          disabled={statusLoading}
+          style={{
+            width: 120,
+          }}
+          options={[
+            {
+              value: "active",
+              label: "Active",
+            },
+            {
+              value: "pending",
+              label: "Pending",
+            },
+          ]}
+          onChange={(value, key) => handleChange(value, record.key)}
+        />
       ),
     },
     {
@@ -75,9 +103,7 @@ const ShowAllBrand = () => {
       dataIndex: "key",
       render: (id, record) => (
         <Space>
-          <Button>
-            <EditOutlined />
-          </Button>
+          <BrandUpdateModel refetch={refetch} brandId={id} brand={record} />
           <Button
             disabled={loading}
             danger
@@ -90,13 +116,43 @@ const ShowAllBrand = () => {
     },
   ];
 
+  const handleChange = async (value, key) => {
+    setStatusLoading(true);
+    const data = { status: value };
+    try {
+      // API Call
+      const response = await API.put(`/brand/status/${key}`, data);
+
+      if (response.status === 200) {
+        message.success("Profile Updated Successfully");
+        setStatusLoading(false);
+        refetch();
+      } else {
+        message.error("Update failed");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      message.error("Something went wrong");
+    } finally {
+      setStatusLoading(false);
+    }
+  };
+  // const onSearch = (value, _e, info) => console.log(info?.source, value);
+
   return (
     <div>
-      <div className="flex justify-end">
-        <BrandAddModel />
+      <div className="flex justify-between">
+        <Search
+          className="w-[400px]"
+          placeholder="Search by Brand"
+          allowClear
+          enterButton="Search"
+          size="large"
+          onSearch={onSearch}
+        />
+        <BrandAddModel refetch={refetch} />
       </div>
-      <Table columns={columns} dataSource={data} loading={isLoading} />
-    </div>
+      <Table columns={columns} dataSource={filteredData} loading={isLoading} />    </div>
   );
 };
 

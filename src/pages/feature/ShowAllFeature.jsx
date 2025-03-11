@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { API, useAlFeature } from "../../api/api";
 import { DeleteOutlined } from "@ant-design/icons";
-import { message, Modal, Spin } from "antd";
+import { Button, message, Modal, Spin } from "antd";
+import AddVehicleFeature from "./AddVehicleFeature";
 
 const ShowAllFeature = () => {
   const { alFeature, isLoading, refetch } = useAlFeature();
@@ -47,6 +48,9 @@ const ShowAllFeature = () => {
 
   return (
     <div>
+      <div className="flex justify-end m-3">
+        <AddVehicleFeature refetch={refetch} />
+      </div>
       <div className="grid grid-cols-3 gap-2">
         {alFeature.map((feature) => (
           <div className="flex justify-between items-center bg-gray-100 p-2 rounded">

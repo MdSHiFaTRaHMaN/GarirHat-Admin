@@ -57,10 +57,10 @@ const sidebarItems = [
         key: "4-1",
         label: <Link to="/model">All Model</Link>,
       },
-      {
-        key: "4-2",
-        label: <Link to="/model-request">New Model Request</Link>,
-      },
+      // {
+      //   key: "4-2",
+      //   label: <Link to="/model-request">New Model Request</Link>,
+      // },
     ],
   },
   {
@@ -74,7 +74,7 @@ const sidebarItems = [
       },
       {
         key: "5-2",
-        label: <Link to="/model-request">New Feature Request</Link>,
+        label: <Link to="/request-feature">New Feature Request</Link>,
       },
     ],
   },

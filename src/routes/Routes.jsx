@@ -13,6 +13,8 @@ import AboutUs from "../pages/settings/AboutUs";
 import CarDetails from "../pages/vehicleDetails/CarDetails";
 import Test from "../pages/Test";
 import ModelRequest from "../pages/model/ModelRequest";
+import RequestVehicleFeature from "../pages/feature/RequestVehicleFeature";
+import VendorDetails from "../pages/vendor/VendorDetails";
 
 export const routes = createBrowserRouter([
   {
@@ -52,8 +54,16 @@ export const routes = createBrowserRouter([
         element: <ShowAllFeature />
       },
       {
+        path: "/request-feature",
+        element: <RequestVehicleFeature />
+      },
+      {
         path: "/vendor-list",
         element: <VendorList />
+      },
+      {
+        path: "/vendor-details/:vendorId",
+        element: <VendorDetails />
       },
       {
         path: "/user-list",

@@ -1,7 +1,8 @@
 import { DeleteOutlined } from "@ant-design/icons";
-import { Collapse, message, Modal, Spin } from "antd";
+import { Button, Collapse, message, Modal, Spin } from "antd";
 import React, { useState } from "react";
 import { API, useBrandWithModel } from "../../api/api";
+import AddVehicleModel from "./AddVehicleModel";
 
 const ShowAllModel = () => {
   const { brandWithModel, isLoading, refetch } = useBrandWithModel();
@@ -56,22 +57,27 @@ const ShowAllModel = () => {
                 key: model.id,
                 label: <h1>{model.brand_name}</h1>,
                 children: (
-                  <div className="grid grid-cols-3 gap-2">
-                    {model.models.map((onModel) => (
-                      <div
-                        key={onModel.id}
-                        className="flex justify-between items-center bg-gray-100 p-2 rounded px-5"
-                      >
-                        <li>{onModel.model_name}</li>
-                        <button
-                          onClick={() => handleModelDelete(onModel.id)}
-                          className="text-red-600"
-                          disabled={loading} // Disable button during delete request
+                  <div>
+                    <div className="flex justify-end m-3">
+                      <AddVehicleModel refetch={refetch} brandId={model.id} />
+                    </div>
+                    <div className="grid grid-cols-3 gap-2">
+                      {model.models.map((onModel) => (
+                        <div
+                          key={onModel.id}
+                          className="flex justify-between items-center bg-gray-100 p-2 rounded px-5"
                         >
-                          <DeleteOutlined />
-                        </button>
-                      </div>
-                    ))}
+                          <li>{onModel.model_name}</li>
+                          <button
+                            onClick={() => handleModelDelete(onModel.id)}
+                            className="text-red-600"
+                            disabled={loading} // Disable button during delete request
+                          >
+                            <DeleteOutlined />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 ),
               },
