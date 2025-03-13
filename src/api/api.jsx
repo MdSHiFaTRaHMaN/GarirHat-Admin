@@ -20,7 +20,7 @@ export const useMyVehicles = ({
 } = {}) => {
   const getMyVehicles = async () => {
     const response = await API.get("/vehicle/web", {
-      params: { page, limit, vehicle_code },
+      params: { page, limit, vehicle_code},
     });
     return response.data;
   };
@@ -184,6 +184,26 @@ export const useAllUser = () => {
   });
 
   return { allUser, isLoading, isError, error, refetch };
+};
+//   all user
+export const useSingleUser = (userId) => {
+  const getSingleUser = async () => {
+    const response = await API.get(`/user/${userId}`);
+    return response.data.data;
+  };
+
+  const {
+    data: singleUser = [],
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["singleUser", userId],
+    queryFn: getSingleUser,
+  });
+
+  return { singleUser, isLoading, isError, error, refetch };
 };
 
 // get Settings

@@ -16,6 +16,7 @@ import ModelRequest from "../pages/model/ModelRequest";
 import RequestVehicleFeature from "../pages/feature/RequestVehicleFeature";
 import VendorDetails from "../pages/vendor/VendorDetails";
 import ShowAllDivition from "../pages/location/ShowAllDivition";
+import SingleUserInfo from "../pages/user/SingleUserInfo";
 
 export const routes = createBrowserRouter([
   {
@@ -81,6 +82,10 @@ export const routes = createBrowserRouter([
       {
         path: "/Vehicle-details/:vehicleID",
         element: <CarDetails />
+      },
+      {
+        path: "/user-info/:userId",
+        element: <SingleUserInfo />
       },
       {
         path: "/test",

@@ -1,19 +1,27 @@
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Button, message, Select, Space, Table, Tag } from "antd";
-import React, { useState } from "react";
+import { DeleteOutlined } from "@ant-design/icons";
+import { Button, Input, message, Select, Space, Table } from "antd";
+import React, { useState, useEffect } from "react";
 import { API, useAllVendor } from "../../api/api";
 import { LuEye } from "react-icons/lu";
 import { Link } from "react-router-dom";
+const { Search } = Input;
 
 const VendorList = () => {
   const { allVendor, isLoading, refetch } = useAllVendor();
- const [statusLoading, setStatusLoading]= useState(false);
+  const [statusLoading, setStatusLoading] = useState(false);
+  const [filteredVendors, setFilteredVendors] = useState([]);
+
+  useEffect(() => {
+    setFilteredVendors(allVendor); // Initialize filtered list
+  }, [allVendor]);
+
   // Data Processing
-  const data = allVendor?.map((vendor) => ({
+  const data = filteredVendors?.map((vendor) => ({
     key: vendor.id,
     image: vendor.profile_picture,
     vendor_name: vendor.name,
     email: vendor.email,
+    phone: vendor.phone,
     status: vendor.status,
   }));
 
@@ -43,6 +51,11 @@ const VendorList = () => {
       key: "email",
     },
     {
+      title: "Phone",
+      dataIndex: "phone",
+      key: "phone",
+    },
+    {
       title: "Status",
       dataIndex: "status",
       key: "status",
@@ -50,24 +63,13 @@ const VendorList = () => {
         <Select
           defaultValue={status || "Select Status"}
           disabled={statusLoading}
-          style={{
-            width: 120,
-          }}
+          style={{ width: 120 }}
           options={[
-            {
-              value: "Verified",
-              label: "Verified",
-            },
-            {
-              value: "Un-Verified",
-              label: "Un-Verified",
-            },
-            {
-              value: "Blocked",
-              label: "Blocked",
-            },
+            { value: "Verified", label: "Verified" },
+            { value: "Un-Verified", label: "Un-Verified" },
+            { value: "Blocked", label: "Blocked" },
           ]}
-          onChange={(value, key) => handleChange(value, record.key)}
+          onChange={(value) => handleChange(value, record.key)}
         />
       ),
     },
@@ -91,29 +93,40 @@ const VendorList = () => {
 
   const handleChange = async (value, key) => {
     setStatusLoading(true);
-    const data = { status : value }
     try {
-      // API Call
-      const response = await API.put(`/vendor/status/${key}`, data);
-      
+      const response = await API.put(`/vendor/status/${key}`, { status: value });
       if (response.status === 200) {
         message.success("Status Updated Successfully");
-        setStatusLoading(false);
         refetch();
       } else {
         message.error("Update failed");
       }
     } catch (error) {
-      console.error("Error:", error);
       message.error("Something went wrong");
     } finally {
       setStatusLoading(false);
     }
   };
 
+  const onSearch = (value) => {
+    const filtered = allVendor?.filter((vendor) =>
+      vendor.name.toLowerCase().includes(value.toLowerCase())
+    );
+    setFilteredVendors(filtered);
+  };
 
   return (
     <div>
+      <div className="my-2">
+        <Search
+          placeholder="Search for Vendor name"
+          className="w-[350px]"
+          allowClear
+          enterButton="Search"
+          size="large"
+          onSearch={onSearch}
+        />
+      </div>
       <Table columns={columns} dataSource={data} loading={isLoading} />
     </div>
   );

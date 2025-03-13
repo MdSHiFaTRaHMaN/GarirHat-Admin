@@ -1,19 +1,29 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Button, message, Select, Space, Table, Tag } from "antd";
-import React, { useState } from "react";
+import { Button, Input, message, Select, Space, Table, Tag } from "antd";
+import React, { useEffect, useState } from "react";
 import { API, useAllUser } from "../../api/api";
+import { FaEye } from "react-icons/fa";
+import { Link } from "react-router-dom";
+const { Search } = Input;
 
 const UserList = () => {
   const { allUser, isLoading, refetch } = useAllUser();
- const [statusLoading, setStatusLoading]= useState(false);
+  const [statusLoading, setStatusLoading] = useState(false);
+
+  const [filteredUsers, setFilteredUsers] = useState([]);
+
+  useEffect(() => {
+    setFilteredUsers(allUser); // Initialize filtered list
+  }, [allUser]);
 
   // Data Processing
-  const data = allUser?.map((user) => ({
+  const data = filteredUsers?.map((user) => ({
     key: user.id,
     image: user.profile_pic,
     user_name: user.name,
     email: user.email,
     status: user.status,
+    phone: user.phone,
   }));
 
   // Columns for Table
@@ -40,6 +50,11 @@ const UserList = () => {
       title: "Email",
       dataIndex: "email",
       key: "email",
+    },
+    {
+      title: "Phone",
+      dataIndex: "phone",
+      key: "phone",
     },
     {
       title: "Status",
@@ -75,6 +90,11 @@ const UserList = () => {
       key: "action",
       render: (_, record) => (
         <Space>
+          <Link to={`/user-info/${record.key}`}>
+            <Button>
+              <FaEye />
+            </Button>
+          </Link>
           <Button danger>
             <DeleteOutlined />
           </Button>
@@ -85,11 +105,11 @@ const UserList = () => {
 
   const handleChange = async (value, key) => {
     setStatusLoading(true);
-    const data = { status : value }
+    const data = { status: value };
     try {
       // API Call
       const response = await API.put(`/user/status/${key}`, data);
-      
+
       if (response.status === 200) {
         message.success("Status Updated Successfully");
         setStatusLoading(false);
@@ -105,8 +125,25 @@ const UserList = () => {
     }
   };
 
+  const onSearch = (value) => {
+    const filtered = allUser?.filter((user) =>
+      user.name.toLowerCase().includes(value.toLowerCase())
+    );
+    setFilteredUsers(filtered);
+  };
+
   return (
     <div>
+      <div className="my-2">
+        <Search
+          placeholder="Search for User name"
+          className="w-[350px]"
+          allowClear
+          enterButton="Search"
+          size="large"
+          onSearch={onSearch}
+        />
+      </div>
       <Table columns={columns} dataSource={data} loading={isLoading} />
     </div>
   );
