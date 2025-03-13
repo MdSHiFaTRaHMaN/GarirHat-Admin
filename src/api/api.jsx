@@ -17,10 +17,11 @@ export const useMyVehicles = ({
   page = 1,
   limit = 10,
   vehicle_code = "",
+  vendor_id = ""
 } = {}) => {
   const getMyVehicles = async () => {
     const response = await API.get("/vehicle/web", {
-      params: { page, limit, vehicle_code},
+      params: { page, limit, vehicle_code, vendor_id},
     });
     return response.data;
   };
@@ -32,7 +33,7 @@ export const useMyVehicles = ({
     error,
     refetch,
   } = useQuery({
-    queryKey: ["myVehicles", page, limit, vehicle_code],
+    queryKey: ["myVehicles", page, limit, vehicle_code, vendor_id],
     queryFn: getMyVehicles,
   });
 
@@ -269,5 +270,26 @@ export const useAllDivition = () => {
     });
   
     return { allDivition, isLoading, isError, error, refetch };
+  };
+//   get all single user wishlist
+export const useUserWishList = (userId) => {
+    const getUserWishList = async () => {
+      const response = await API.get(`/wishlist/my?user_id=${userId}`);
+      console.log("response", response)
+      return response.data.data;
+    };
+  
+    const {
+      data: userWishList = [],
+      isLoading,
+      isError,
+      error,
+      refetch,
+    } = useQuery({
+      queryKey: ["userWishList", userId],
+      queryFn: getUserWishList,
+    });
+  
+    return { userWishList, isLoading, isError, error, refetch };
   };
   
