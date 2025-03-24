@@ -1,6 +1,6 @@
 import { DeleteOutlined } from "@ant-design/icons";
 import { Button, Input, message, Select, Space, Table } from "antd";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { API, useAllVendor } from "../../api/api";
 import { LuEye } from "react-icons/lu";
 import { Link } from "react-router-dom";
@@ -14,6 +14,11 @@ const VendorList = () => {
   useEffect(() => {
     setFilteredVendors(allVendor); // Initialize filtered list
   }, [allVendor]);
+
+  // Count of Verified, Unverified and Blocked Vendors
+  const verifiedCount = useMemo(() => allVendor?.filter(vendor => vendor.status === "Verified").length, [allVendor]);
+  const unverifiedCount = useMemo(() => allVendor?.filter(vendor => vendor.status === "Un-Verified").length, [allVendor]);
+  const blockedCount = useMemo(() => allVendor?.filter(vendor => vendor.status === "Blocked").length, [allVendor]);
 
   // Data Processing
   const data = filteredVendors?.map((vendor) => ({
@@ -94,7 +99,9 @@ const VendorList = () => {
   const handleChange = async (value, key) => {
     setStatusLoading(true);
     try {
-      const response = await API.put(`/vendor/status/${key}`, { status: value });
+      const response = await API.put(`/vendor/status/${key}`, {
+        status: value,
+      });
       if (response.status === 200) {
         message.success("Status Updated Successfully");
         refetch();
@@ -117,7 +124,7 @@ const VendorList = () => {
 
   return (
     <div>
-      <div className="my-2">
+      <div className="my-2 flex justify-between items-center">
         <Search
           placeholder="Search for Vendor name"
           className="w-[350px]"
@@ -126,6 +133,18 @@ const VendorList = () => {
           size="large"
           onSearch={onSearch}
         />
+        <button className=" border text-black px-4 py-2 rounded">
+          <strong>Total:</strong> {allVendor?.length} Vendors
+        </button>
+        <button className=" border text-black px-4 py-2 rounded">
+          <strong>Verified:</strong> {verifiedCount} Vendors
+        </button>
+        <button className=" border text-black px-4 py-2 rounded">
+          <strong>Unverified:</strong> {unverifiedCount} Vendors
+        </button>
+        <button className=" border text-black px-4 py-2 rounded">
+          <strong>Blocked:</strong> {blockedCount} Vendors
+        </button>
       </div>
       <Table columns={columns} dataSource={data} loading={isLoading} />
     </div>

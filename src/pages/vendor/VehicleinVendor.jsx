@@ -22,6 +22,7 @@ const VehicleinVendor = ({vendorId}) => {
     const { myVehicles, pagination, isLoading, isError, error, refetch } =
       useMyVehicles(filters);
   
+
     React.useEffect(() => {
       refetch(); // Refetch data whenever filters are updated
     }, [filters, refetch]);
@@ -205,6 +206,18 @@ const VehicleinVendor = ({vendorId}) => {
             }}
             style={{ width: 300 }}
           />
+          <button className=" border text-black px-4 py-2 rounded">
+            <strong>Total :</strong> {pagination.total}  Vehicle
+          </button>
+          <button className=" border text-black px-4 py-2 rounded">
+            <strong>Sold :</strong> XX  Vehicle
+          </button>
+          <button className=" border text-black px-4 py-2 rounded">
+            <strong>Active:</strong> XX  Vehicle
+          </button>
+          <button className=" border text-black px-4 py-2 rounded">
+            <strong>Inactive:</strong> XX  Vehicle
+          </button>
         </div>
         {isLoading ? (
           <Spin size="large" className="block mx-auto my-10" />

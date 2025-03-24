@@ -6,27 +6,30 @@ import Specifications from "./Specifications";
 import { useParams } from "react-router-dom";
 import { Image, Button, Select, Badge } from "antd";
 import { useVehicleDetails } from "../../api/api";
+import { FaBangladeshiTakaSign } from "react-icons/fa6";
 
 const CarDetails = () => {
   const { vehicleID } = useParams();
   const { vehicleDetails, isLoading, isError, error } =
     useVehicleDetails(vehicleID);
 
-  const [status, setStatus] = useState("");
-
-  useEffect(() => {
-    if (vehicleDetails?.data) {
-      setStatus(vehicleDetails.data.status);
-    }
-  }, [vehicleDetails]);
-
-  const vehicle = vehicleDetails?.data;
+    
+    const [status, setStatus] = useState("");
+    
+    useEffect(() => {
+      if (vehicleDetails?.data) {
+        setStatus(vehicleDetails.data.status);
+      }
+    }, [vehicleDetails]);
+    
+    const vehicle = vehicleDetails?.data;
+    console.log("vehicleDetails", vehicle);
 
   const responsive = {
     desktop: {
       breakpoint: { max: 3000, min: 1024 },
       items: 1,
-      slidesToSlide: 1, // Optional for sliding 1 item at a time
+      slidesToSlide: 1,
     },
     tablet: {
       breakpoint: { max: 1024, min: 464 },
@@ -69,11 +72,11 @@ const CarDetails = () => {
         </Carousel>
 
         <div>
-          <h1 className="text-3xl font-bold">
+          <h1 className="text-2xl font-bold">
             {vehicle?.year_of_manufacture} {vehicle.make} {vehicle.model}
           </h1>
-          <p className="text-green-600 text-2xl font-semibold">
-            ৳{vehicle.price}
+          <p className="flex items-center gap-1 text-2xl font-semibold">
+            <FaBangladeshiTakaSign /> {vehicle.price} TK
           </p>
           <div className="mt-4 space-y-2 text-gray-700">
             <p>
@@ -84,7 +87,7 @@ const CarDetails = () => {
               {vehicle.district}, {vehicle.division}
             </p>
             <p>
-              <strong>Discount Price:</strong> ৳{vehicle.discount_price}
+              <strong>Discount Price:</strong> ৳{vehicle.discount_price} TK
             </p>
             <p>
               <strong>Advertised On: </strong>

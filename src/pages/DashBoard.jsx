@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Card, Progress } from "antd";
-import { UserOutlined, BoxPlotOutlined } from "@ant-design/icons";
+import { UserOutlined, CarOutlined } from "@ant-design/icons";
 import { AiOutlineArrowUp, AiOutlineArrowDown } from "react-icons/ai";
 import {
   ResponsiveContainer,
@@ -10,23 +10,31 @@ import {
   YAxis,
   Tooltip,
 } from "recharts";
-
-const data = [
-  { month: "Jan", sales: 100 },
-  { month: "Feb", sales: 350 },
-  { month: "Mar", sales: 180 },
-  { month: "Apr", sales: 270 },
-  { month: "May", sales: 190 },
-  { month: "Jun", sales: 200 },
-  { month: "Jul", sales: 90 },
-  { month: "Aug", sales: 150 },
-  { month: "Sep", sales: 220 },
-  { month: "Oct", sales: 340 },
-  { month: "Nov", sales: 250 },
-  { month: "Dec", sales: 80 },
-];
+import { useAllUser, useAllVehicle } from "../api/api";
+import { format, parseISO } from "date-fns";
 
 const Dashboard = () => {
+  const { allUser } = useAllUser();
+  const { allVehicles } = useAllVehicle();
+
+  const monthlyVehicleData = useMemo(() => {
+    const months = [
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    ];
+    const vehicleCountByMonth = Array(12).fill(0);
+
+    allVehicles.forEach(vehicle => {
+      const month = parseISO(vehicle.created_at).getMonth();
+      vehicleCountByMonth[month]++;
+    });
+
+    return months.map((month, index) => ({
+      month,
+      vehicle: vehicleCountByMonth[index]
+    }));
+  }, [allVehicles]);
+
   return (
     <div className="flex">
       <div className="w-4/6">
@@ -37,8 +45,8 @@ const Dashboard = () => {
               <div className="flex items-center gap-3">
                 <UserOutlined className="text-4xl bg-blue-100 p-3 rounded-full text-blue-600" />
                 <div>
-                  <p className="text-gray-500">Customers</p>
-                  <h2 className="text-3xl font-bold">3,782</h2>
+                  <p className="text-gray-500">User</p>
+                  <h2 className="text-3xl font-bold">{allUser.length}</h2>
                 </div>
               </div>
               <span className="text-green-500 flex items-center text-lg">
@@ -50,10 +58,10 @@ const Dashboard = () => {
           <Card className="p-6 rounded-lg border-l-4 border-red-500">
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-3">
-                <BoxPlotOutlined className="text-4xl bg-red-100 p-3 rounded-full text-red-600" />
+                <CarOutlined className="text-4xl bg-red-100 p-3 rounded-full text-red-600" />
                 <div>
-                  <p className="text-gray-500">Orders</p>
-                  <h2 className="text-3xl font-bold">5,359</h2>
+                  <p className="text-gray-500">Vehicle</p>
+                  <h2 className="text-3xl font-bold">{allVehicles?.length}</h2>
                 </div>
               </div>
               <span className="text-red-500 flex items-center text-lg">
@@ -63,16 +71,16 @@ const Dashboard = () => {
           </Card>
         </div>
 
-        {/* Monthly Sales Chart */}
+        {/* Monthly vehicle Chart */}
         <div className="mt-6">
           <Card className="p-4">
-            <h3 className="text-lg font-semibold mb-4">Monthly Sales</h3>
+            <h3 className="text-lg font-semibold mb-4">Monthly Vehicle Post</h3>
             <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={data}>
+              <BarChart data={monthlyVehicleData}>
                 <XAxis dataKey="month" />
                 <YAxis />
                 <Tooltip />
-                <Bar dataKey="sales" fill="#2563EB" radius={[5, 5, 0, 0]} />
+                <Bar dataKey="vehicle" fill="#2563EB" radius={[5, 5, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </Card>
@@ -81,7 +89,7 @@ const Dashboard = () => {
 
       {/* Monthly Target */}
       <div className="mt-2 grid grid-cols-1 w-2/6">
-      <Card className="p-6 shadow-lg rounded-lg">
+        <Card className="p-6 shadow-lg rounded-lg">
           <h3 className="text-lg font-semibold">Monthly Target</h3>
           <p className="text-gray-500">Your progress towards the monthly goal</p>
           <div className="flex justify-center mt-6">

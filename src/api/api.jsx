@@ -42,6 +42,27 @@ export const useMyVehicles = ({
   return { myVehicles, pagination, isLoading, isError, error, refetch };
 };
 
+// get all vehicles
+export const useAllVehicle = () => {
+  const getAllVehicles = async () => {
+    const response = await API.get("/vehicle/all?limit=1000000");
+    return response.data.data;
+  };
+
+  const {
+    data: allVehicles = [],
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["allVehicles"],
+    queryFn: getAllVehicles,
+  });
+
+  return { allVehicles, isLoading, isError, error, refetch };
+};
+
 // AlFeature list
 export const useAlFeature = () => {
   const getAlFeature = async () => {
@@ -232,7 +253,6 @@ export const useSettings = (settingName) => {
 export const useVehicleDetails = (vehicleID) => {
     const getVehicleDetails = async () => {
       const response = await API.get(`/vehicle/${vehicleID}`);
-      console.log("response", response)
       return response.data;
     };
   
@@ -254,7 +274,6 @@ export const useVehicleDetails = (vehicleID) => {
 export const useAllDivition = () => {
     const getAllDivition = async () => {
       const response = await API.get(`/location/division`);
-      console.log("response", response)
       return response.data.data;
     };
   
@@ -275,7 +294,6 @@ export const useAllDivition = () => {
 export const useUserWishList = (userId) => {
     const getUserWishList = async () => {
       const response = await API.get(`/wishlist/my?user_id=${userId}`);
-      console.log("response", response)
       return response.data.data;
     };
   

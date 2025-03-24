@@ -21,6 +21,8 @@ function AllVehicleList() {
   const { myVehicles, pagination, isLoading, isError, error, refetch } =
     useMyVehicles(filters);
 
+  console.log(pagination.total); // Total number of vehicles
+
   React.useEffect(() => {
     refetch(); // Refetch data whenever filters are updated
   }, [filters, refetch]);
@@ -205,6 +207,9 @@ function AllVehicleList() {
           }}
           style={{ width: 300 }}
         />
+        <div>
+          <h1><strong>Total:</strong> {pagination.total} Vehicle</h1>
+        </div>
       </div>
       {isLoading ? (
         <Spin size="large" className="block mx-auto my-10" />

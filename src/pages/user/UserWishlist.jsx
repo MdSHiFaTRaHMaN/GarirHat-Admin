@@ -1,32 +1,32 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Button, Input, message, Modal, Select, Space, Table, Tag } from "antd";
-import React, { useState } from "react";
+import { Button, Input, Modal, Select, Space, Table, Tag } from "antd";
+import React from "react";
 import { useUserWishList } from "../../api/api";
 const { Search } = Input;
 
-const UserWishlist = ({userId}) => {
-  const { userWishList, isLoading, } = useUserWishList(userId);
-  console.log(userWishList)
+const UserWishlist = ({ userId }) => {
+  const { userWishList, isLoading } = useUserWishList(userId);
+  console.log(userWishList);
   // Data Processing
   const data = userWishList?.map((brand) => ({
     key: brand.id,
     image: brand.thumbnail_image,
     brand_name: brand.brand_name,
     status: brand.status,
-    make : brand.make,
+    make: brand.make,
     model: brand.model,
     year_of_manufacture: brand.year_of_manufacture,
     vehicle_code: brand.vehicle_code,
     upzila: brand.upzila,
-    division: brand.division
+    division: brand.division,
   }));
 
   // Columns for Table
   const columns = [
     {
-       title: "Vehicle Code" ,
-       dataIndex: "vehicle_code",
-       key: "vehicle_code"
+      title: "Vehicle Code",
+      dataIndex: "vehicle_code",
+      key: "vehicle_code",
     },
     {
       title: "Image",
@@ -47,30 +47,30 @@ const UserWishlist = ({userId}) => {
             <h2 className="text-gray-500">{render.model}</h2>
           </div>
         </div>
-      )
+      ),
     },
     {
-        title: "Year",
-        dataIndex: "year_of_manufacture",
-        key: "year_of_manufacture"
+      title: "Year",
+      dataIndex: "year_of_manufacture",
+      key: "year_of_manufacture",
     },
     {
-        title: "Address",
-        dataIndex: "address",
-        key: "address",
-        render: (_, render) => (
+      title: "Address",
+      dataIndex: "address",
+      key: "address",
+      render: (_, render) => (
         <div>
-            {render.upzila} {render.division}
+          {render.upzila} {render.division}
         </div>
-        )
-    }
+      ),
+    },
   ];
 
   // const onSearch = (value, _e, info) => console.log(info?.source, value);
 
   return (
     <div>
-        <h1 className="text-xl font-semibold">User WishList</h1>
+      <h1 className="text-xl font-semibold">User WishList</h1>
       <Table columns={columns} dataSource={data} loading={isLoading} />{" "}
     </div>
   );
