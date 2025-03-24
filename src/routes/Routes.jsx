@@ -17,6 +17,7 @@ import RequestVehicleFeature from "../pages/feature/RequestVehicleFeature";
 import VendorDetails from "../pages/vendor/VendorDetails";
 import ShowAllDivition from "../pages/location/ShowAllDivition";
 import SingleUserInfo from "../pages/user/SingleUserInfo";
+import PriceReason from "../pages/pricereason/PriceReason";
 
 export const routes = createBrowserRouter([
   {
@@ -86,6 +87,10 @@ export const routes = createBrowserRouter([
       {
         path: "/user-info/:userId",
         element: <SingleUserInfo />
+      },
+      {
+        path: "/price-reason",
+        element: <PriceReason />
       },
       {
         path: "/test",

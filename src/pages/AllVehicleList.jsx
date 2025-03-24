@@ -207,9 +207,18 @@ function AllVehicleList() {
           }}
           style={{ width: 300 }}
         />
-        <div>
-          <h1><strong>Total:</strong> {pagination.total} Vehicle</h1>
-        </div>
+          <button className="px-4 py-2 rounded border border-blue-500">
+            <strong>Total:</strong> {pagination.total} Vehicle
+          </button>
+          <button className="px-4 py-2 rounded border border-blue-500">
+            <strong>Active:</strong> XX Vehicle
+          </button>
+          <button className="px-4 py-2 rounded border border-blue-500">
+            <strong>Inactive:</strong> XX Vehicle
+          </button>
+          <button className="px-4 py-2 rounded border border-blue-500">
+            <strong>Sold:</strong> XX Vehicle
+          </button>
       </div>
       {isLoading ? (
         <Spin size="large" className="block mx-auto my-10" />

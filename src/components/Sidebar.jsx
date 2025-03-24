@@ -12,7 +12,7 @@ import {
 import { Link } from "react-router-dom";
 import { CiLogout } from "react-icons/ci";
 import { TbBrandAdobe } from "react-icons/tb";
-import { FaPeopleGroup } from "react-icons/fa6";
+import { FaBangladeshiTakaSign, FaPeopleGroup } from "react-icons/fa6";
 
 const sidebarItems = [
   {
@@ -98,7 +98,7 @@ const sidebarItems = [
     ),
   },
   {
-    key: "10",
+    key: "8",
     icon: <FaPeopleGroup />,
     label: (
       <Link to="/divition-bd">
@@ -107,26 +107,35 @@ const sidebarItems = [
     ),
   },
   {
-    key: "8",
+    key: "9",
+    icon: <FaBangladeshiTakaSign />,
+    label: (
+      <Link to="/price-reason">
+        <span className="font-semibold">Price Reason</span>
+      </Link>
+    ),
+  },
+  {
+    key: "10",
     icon: <SettingOutlined />,
     label: <span className="font-semibold">Setting</span>,
     children: [
       {
-        key: "8-1",
+        key: "10-1",
         label: <Link to="/about-us">About US</Link>,
       },
       {
-        key: "8-2",
+        key: "10-2",
         label: <Link to="/term-condition">Term & Condition</Link>,
       },
       {
-        key: "8-3",
+        key: "10-3",
         label: <Link to="/privacy-policy">Privacy Policy</Link>,
       },
     ],
   },
   {
-    key: "9",
+    key: "11",
     icon: <CiLogout />,
     label: (
       <Link to="/user-profile">

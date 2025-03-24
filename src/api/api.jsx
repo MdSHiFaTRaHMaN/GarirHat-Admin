@@ -310,4 +310,25 @@ export const useUserWishList = (userId) => {
   
     return { userWishList, isLoading, isError, error, refetch };
   };
+  // price reason
+export const usePriceReason = () => {
+    const getPriceReason = async () => {
+      const response = await API.get(`/price-reason/all`);
+      return response.data.data;
+    };
+  
+    const {
+      data: priceReason = [],
+      isLoading,
+      isError,
+      error,
+      refetch,
+    } = useQuery({
+      queryKey: ["priceReason"],
+      queryFn: getPriceReason,
+    });
+  
+    return { priceReason, isLoading, isError, error, refetch };
+  };
+
   
