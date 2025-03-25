@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { API, useAllUser } from "../../api/api";
 import { FaEye } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 const { Search } = Input;
 
 const UserList = () => {
@@ -171,6 +172,9 @@ const UserList = () => {
 
   return (
     <div>
+      <Helmet>
+        <title>User List | GarirHat</title>   
+      </Helmet>
       <div className="my-2 flex justify-between items-center">
         <Search
           placeholder="Search for User name"
@@ -180,16 +184,16 @@ const UserList = () => {
           size="large"
           onSearch={onSearch}
         />
-        <button className="border rounded-md p-2 m-2">
+        <button className="px-4 py-2 bg-ButtonColor rounded text-white">
           <strong>Total:</strong> {allUser?.length} Users
         </button>
-        <button className="border rounded-md p-2 m-2">
+        <button className="px-4 py-2 bg-ButtonColor rounded text-white">
           <strong>Active:</strong> {activeUsers} Users
         </button>
-        <button className="border rounded-md p-2 m-2">
+        <button className="px-4 py-2 bg-ButtonColor rounded text-white">
           <strong>Inactive:</strong> {inactiveUsers} Users
         </button>
-        <button className="border rounded-md p-2 m-2">
+        <button className="px-4 py-2 bg-ButtonColor rounded text-white">
           <strong>Blocked:</strong> {blockedUsers} Users
         </button>
       </div>

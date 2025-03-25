@@ -22,7 +22,7 @@ const VendorList = () => {
 
   // Data Processing
   const data = filteredVendors?.map((vendor) => ({
-    key: vendor.id,
+    key: vendor.busn_id,
     image: vendor.profile_picture,
     vendor_name: vendor.name,
     email: vendor.email,
@@ -133,16 +133,16 @@ const VendorList = () => {
           size="large"
           onSearch={onSearch}
         />
-        <button className=" border text-black px-4 py-2 rounded">
+        <button className=" px-4 py-2 bg-ButtonColor rounded text-white">
           <strong>Total:</strong> {allVendor?.length} Vendors
         </button>
-        <button className=" border text-black px-4 py-2 rounded">
+        <button className=" px-4 py-2 bg-ButtonColor rounded text-white">
           <strong>Verified:</strong> {verifiedCount} Vendors
         </button>
-        <button className=" border text-black px-4 py-2 rounded">
+        <button className=" px-4 py-2 bg-ButtonColor rounded text-white">
           <strong>Unverified:</strong> {unverifiedCount} Vendors
         </button>
-        <button className=" border text-black px-4 py-2 rounded">
+        <button className=" px-4 py-2 bg-ButtonColor rounded text-white">
           <strong>Blocked:</strong> {blockedCount} Vendors
         </button>
       </div>

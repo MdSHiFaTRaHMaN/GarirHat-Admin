@@ -4,13 +4,19 @@ import { useSingleUser } from "../../api/api";
 import { Image, Tag, Card } from "antd";
 import { MailOutlined, UserOutlined, LoginOutlined } from "@ant-design/icons";
 import UserWishlist from "./UserWishlist";
+import { Helmet } from "react-helmet-async";
 
 const SingleUserInfo = () => {
   const { userId } = useParams();
-  const { singleUser } = useSingleUser(userId);
+  const { singleUser, isLoading } = useSingleUser(userId);
+  
+  if (isLoading) return <div>Loading...</div>;
 
   return (
     <div>
+      <Helmet>
+      <title>{`${singleUser?.name} | GarirHat`}</title>
+      </Helmet>
       <div className="flex justify-center items-center p-4">
         <div className="max-w-md w-full p-6 bg-white text-center">
           <Image

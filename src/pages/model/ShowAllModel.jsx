@@ -3,6 +3,7 @@ import { Button, Collapse, message, Modal, Spin } from "antd";
 import React, { useState } from "react";
 import { API, useBrandWithModel } from "../../api/api";
 import AddVehicleModel from "./AddVehicleModel";
+import { Helmet } from "react-helmet-async";
 
 const ShowAllModel = () => {
   const { brandWithModel, isLoading, refetch } = useBrandWithModel();
@@ -48,6 +49,9 @@ const ShowAllModel = () => {
 
   return (
     <div className="space-y-3">
+      <Helmet>
+        <title>Model - GarirHat</title>
+      </Helmet>
       {brandWithModel?.length > 0 ? ( // Ensure data exists before rendering
         brandWithModel.map((model) => (
           <Collapse

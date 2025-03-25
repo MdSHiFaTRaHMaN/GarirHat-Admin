@@ -4,6 +4,7 @@ import { SearchOutlined, EyeOutlined, DeleteOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { API, useMyVehicles } from "../api/api";
 import UpcomingImg from "../assets/UpcomingImage.jpg";
+import { Helmet } from "react-helmet-async";
 
 const { Search } = Input;
 
@@ -20,8 +21,6 @@ function AllVehicleList() {
 
   const { myVehicles, pagination, isLoading, isError, error, refetch } =
     useMyVehicles(filters);
-
-  console.log(pagination.total); // Total number of vehicles
 
   React.useEffect(() => {
     refetch(); // Refetch data whenever filters are updated
@@ -40,6 +39,7 @@ function AllVehicleList() {
     try {
       setDeleteLoading(true);
       const response = await API.delete(`/vehicle/delete/${id}`);
+      console.log("Delete Response", response);
 
       if (response.status === 201) {
         message.success("Car Deleted Successfully");
@@ -166,7 +166,7 @@ function AllVehicleList() {
       width: 80,
       render: (_, record) => (
         <Link to={`/vehicle-details/${record.id}`}>
-          <Button type="primary" size="small" icon={<EyeOutlined />}>
+          <Button type="primary" icon={<EyeOutlined />}>
             More Details
           </Button>
         </Link>
@@ -192,6 +192,9 @@ function AllVehicleList() {
 
   return (
     <div>
+      <Helmet>
+        <title>All Vehicles | GarirHat</title>
+      </Helmet>
       <h2 className="text-center text-2xl font-semibold my-4">All Vehicles</h2>
       <div className="flex justify-between mb-4">
         <Search
@@ -207,16 +210,16 @@ function AllVehicleList() {
           }}
           style={{ width: 300 }}
         />
-          <button className="px-4 py-2 rounded border border-blue-500">
+          <button className="px-4 py-2 bg-ButtonColor rounded text-white">
             <strong>Total:</strong> {pagination.total} Vehicle
           </button>
-          <button className="px-4 py-2 rounded border border-blue-500">
+          <button className="px-4 py-2 bg-ButtonColor rounded text-white">
             <strong>Active:</strong> XX Vehicle
           </button>
-          <button className="px-4 py-2 rounded border border-blue-500">
+          <button className="px-4 py-2 bg-ButtonColor rounded text-white">
             <strong>Inactive:</strong> XX Vehicle
           </button>
-          <button className="px-4 py-2 rounded border border-blue-500">
+          <button className="px-4 py-2 bg-ButtonColor rounded text-white">
             <strong>Sold:</strong> XX Vehicle
           </button>
       </div>

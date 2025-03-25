@@ -3,6 +3,7 @@ import { useAllDivition } from "../../api/api";
 import { EditOutlined } from "@ant-design/icons";
 import { Button, Space, Table } from "antd";
 import UpdateDivition from "./UpdateDivition";
+import { Helmet } from "react-helmet-async";
 
 const ShowAllDivition = () => {
   const { allDivition, isLoading, refetch } = useAllDivition();
@@ -46,6 +47,9 @@ const ShowAllDivition = () => {
 
   return (
     <div>
+      <Helmet>
+        <title>Divition | GarirHat</title>
+      </Helmet>
       <Table columns={columns} dataSource={data} loading={isLoading} />
     </div>
   );

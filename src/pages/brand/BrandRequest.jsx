@@ -2,6 +2,7 @@ import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { Button, message, Modal, Select, Space, Table, Tag } from "antd";
 import React, { useState } from "react";
 import { API, useAllBrand } from "../../api/api";
+import { Helmet } from "react-helmet-async";
 
 const BrandRequest = () => {
   const { allBrand, isLoading, refetch } = useAllBrand();
@@ -128,6 +129,9 @@ const BrandRequest = () => {
 
   return (
     <div>
+      <Helmet>
+        <title>Brand Request | GarirHat</title> 
+      </Helmet>
       <Table columns={columns} dataSource={pendingBrands} loading={isLoading} />
     </div>
   );

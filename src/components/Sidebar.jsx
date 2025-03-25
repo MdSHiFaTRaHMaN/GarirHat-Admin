@@ -11,8 +11,9 @@ import {
 } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { CiLogout } from "react-icons/ci";
-import { TbBrandAdobe } from "react-icons/tb";
+import { TbBrandAdobe, TbBrandArc } from "react-icons/tb";
 import { FaBangladeshiTakaSign, FaPeopleGroup } from "react-icons/fa6";
+import { MdLocationPin } from "react-icons/md";
 
 const sidebarItems = [
   {
@@ -35,7 +36,7 @@ const sidebarItems = [
   },
   {
     key: "3",
-    icon: <CarOutlined />,
+    icon: <TbBrandArc />,
     label: <span className="font-semibold">Brand</span>,
     children: [
       {
@@ -99,7 +100,7 @@ const sidebarItems = [
   },
   {
     key: "8",
-    icon: <FaPeopleGroup />,
+    icon: <MdLocationPin />,
     label: (
       <Link to="/divition-bd">
         <span className="font-semibold">Location</span>

@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { API, useAllBrand } from "../../api/api";
 import BrandAddModel from "./BrandAddModel";
 import BrandUpdateModel from "./BrandUpdateModel";
+import { Helmet } from "react-helmet-async";
 const { Search } = Input;
 
 const ShowAllBrand = () => {
@@ -141,6 +142,9 @@ const onSearch = (value) => {
 
   return (
     <div>
+      <Helmet>
+        <title>Brand | GarirHat</title>
+      </Helmet>
       <div className="flex justify-between">
         <Search
           className="w-[400px]"

@@ -4,26 +4,26 @@ import CarOverview from "./CarOverview";
 import Features from "./Features";
 import Specifications from "./Specifications";
 import { useParams } from "react-router-dom";
-import { Image, Button, Select, Badge } from "antd";
-import { useVehicleDetails } from "../../api/api";
+import { Image, Button, Select, Badge, Modal, message } from "antd";
+import { API, useVehicleDetails } from "../../api/api";
 import { FaBangladeshiTakaSign } from "react-icons/fa6";
+import { Helmet } from "react-helmet-async";
 
 const CarDetails = () => {
   const { vehicleID } = useParams();
   const { vehicleDetails, isLoading, isError, error } =
     useVehicleDetails(vehicleID);
 
-    
-    const [status, setStatus] = useState("");
-    
-    useEffect(() => {
-      if (vehicleDetails?.data) {
-        setStatus(vehicleDetails.data.status);
-      }
-    }, [vehicleDetails]);
-    
-    const vehicle = vehicleDetails?.data;
-    console.log("vehicleDetails", vehicle);
+  const [status, setStatus] = useState("");
+
+  useEffect(() => {
+    if (vehicleDetails?.data) {
+      setStatus(vehicleDetails.data.status);
+    }
+  }, [vehicleDetails]);
+
+  const vehicle = vehicleDetails?.data;
+  console.log("vehicleDetails", vehicle);
 
   const responsive = {
     desktop: {
@@ -55,10 +55,34 @@ const CarDetails = () => {
       </div>
     );
 
+  const handleTrash = async () => {
+    Modal.confirm({
+      title: "Are you sure you want move to trash this vehicle?",
+      content:
+        "This vehicle will be moved to trash and permanently deleted after 30 days if not restored.",
+      onOk: async () => {
+        try {
+          const response = await API.delete(`/vehicle/delete/${vehicleID}`);
+          if (response.status === 200) {
+            message.success("Vehicle Deleted Successfully");
+          } else {
+            throw new Error("Unexpected response from server");
+          }
+          history.push("/vehicles");
+        } catch (error) {
+          console.error("Failed to delete vehicle:", error);
+        }
+      },
+    });
+  };
+
   return (
     <div className="max-w-6xl mx-auto">
+      <Helmet>
+        <title>{vehicle?.make} {vehicle?.model} | GarirHat</title>
+      </Helmet>
       <div className="p-4 grid md:grid-cols-2 gap-6">
-      <Carousel responsive={responsive} className="h-[370px]">
+        <Carousel responsive={responsive} className="h-[370px]">
           {vehicle.images.map((img, index) => (
             <Image
               width="100%"
@@ -104,7 +128,7 @@ const CarDetails = () => {
                   { value: "Upcoming", label: "Upcoming" },
                 ]}
                 disabled={
-                  vehicle.status !== "Active" && vehicle.status !== "Upcoming"
+                  vehicle.status !== "Sold Out" && vehicle.status !== "Upcoming"
                 }
               />
             </div>
@@ -114,7 +138,7 @@ const CarDetails = () => {
               </Badge>
             </div>
             <div>
-              <Button>Delete</Button>
+              <Button onClick={handleTrash}>Delete</Button>
             </div>
           </div>
         </div>

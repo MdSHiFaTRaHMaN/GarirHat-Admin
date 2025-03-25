@@ -1,25 +1,28 @@
-import React, { useState } from "react";
+import React from "react";
 import { useParams } from "react-router-dom";
 import { useSingleVendor } from "../../api/api";
 import { FaFacebookSquare, FaWhatsappSquare } from "react-icons/fa";
-import { TfiEmail } from "react-icons/tfi";
-import { CheckCircleOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Card, Divider, Image, Rate, Tag } from "antd";
+import { Divider, Image, Tag } from "antd";
 import Bannar from "../../assets/vbannar.jpg";
 import NID from "../../assets/nid.jpg";
 import VehicleinVendor from "./VehicleinVendor";
 import { BsWhatsapp } from "react-icons/bs";
 import { FiInstagram } from "react-icons/fi";
 import { MdMoreHoriz } from "react-icons/md";
+import { Helmet } from "react-helmet-async";
 
 const VendorDetails = () => {
   const { vendorId } = useParams();
-  const { singleVendor } = useSingleVendor(vendorId);
-  const [error, setError] = useState(false);
+  const { singleVendor, isLoading } = useSingleVendor(vendorId);
 
-  console.log(singleVendor);
+  if (isLoading) return <div>Loading...</div>;
+
+  console.log("wingsblast" ,singleVendor);
   return (
     <div>
+      <Helmet>
+        <title>{`${singleVendor?.name} | GarirHat`}</title>
+      </Helmet>
       <div className="flex justify-center items-center">
         <div className="w-full shadow rounded">
           <div className="w-full mx-auto rounded-lg overflow-hidden">

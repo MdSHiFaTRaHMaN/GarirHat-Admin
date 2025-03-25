@@ -3,7 +3,7 @@ import { Breadcrumb, Layout, Drawer } from "antd";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
-
+import { Helmet } from "react-helmet-async";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -40,6 +40,18 @@ const Main = () => {
 
   return (
     <Layout className="min-h-screen bg-gray-100">
+      <Helmet>
+        <title>DashBoard - GarirHat</title>
+        <meta
+          name="description"
+          content="This is the home page of my React app."
+        />
+        <meta property="og:title" content="Home Page - My React App" />
+        <meta
+          property="og:description"
+          content="Welcome to my awesome website!"
+        />
+      </Helmet>
       {/* Header */}
       <Header className="bg-white sticky top-0 z-50 shadow-md w-full flex items-center px-6">
         <Navbar showDrawer={showDrawer} />
@@ -92,7 +104,7 @@ const Main = () => {
 
           {/* Footer */}
           <Footer className="text-center text-gray-500 py-4">
-            © {new Date().getFullYear()} Admin Dashboard - Powered by Ant Design
+            © {new Date().getFullYear()} Admin Dashboard - Powered by GarirHat
           </Footer>
         </Layout>
       </Layout>
